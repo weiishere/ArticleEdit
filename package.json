@@ -1,7 +1,7 @@
 {
   "name": "data-annotations-platform",
   "version": "1.0.0",
-  "description": "数据标注平台",
+  "description": "文章编辑",
   "main": "index.js",
   "scripts": {
     "test": "echo \\\"Error: no test specified\\\" && exit 1",

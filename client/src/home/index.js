@@ -4,7 +4,7 @@ import homeStyle from './style.less';
 import PropTypes from 'prop-types'
 //import actions from './action'
 import { connect } from 'react-redux';
-import { Layout, Menu, Icon, Button } from 'antd';
+import {} from 'antd-mobile';
 const { Header, Content, Footer, Sider } = Layout;
 const SubMenu = Menu.SubMenu;
 
