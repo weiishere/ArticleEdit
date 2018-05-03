@@ -4,9 +4,8 @@ import homeStyle from './style.less';
 import PropTypes from 'prop-types'
 //import actions from './action'
 import { connect } from 'react-redux';
-import {} from 'antd-mobile';
-const { Header, Content, Footer, Sider } = Layout;
-const SubMenu = Menu.SubMenu;
+import { NavBar,Icon } from 'antd-mobile';
+
 
 class Home extends React.Component {
     constructor(props) {
@@ -20,7 +19,15 @@ class Home extends React.Component {
     render() {
         return (
             <div className={homeStyle.wrapper}>
-                角色管理
+                <NavBar
+                    mode="light"
+                    icon={<Icon type="left" />}
+                    onLeftClick={() => console.log('onLeftClick')}
+                    rightContent={[
+                        <Icon key="0" type="search" style={{ marginRight: '16px' }} />,
+                        <Icon key="1" type="ellipsis" />,
+                    ]}
+                >NavBar</NavBar>
             </div>
         );
     }
