@@ -6,7 +6,7 @@ const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const appPath = path.resolve(__dirname, './');
 const version = '20180321';
-const serverHost = 'localhost';//'static.360buyimg.com';
+const serverHost = '192.168.31.139';
 const port = 8800;
 
 const webpackConfig = {
@@ -57,7 +57,7 @@ const webpackConfig = {
     },
     {
       test: /\.(ico|png|gif|jpg|jpeg)$/,
-      loader: 'url-loader'
+      loader: 'url-loader?limit=8192&name=images/[name].[ext]'
     }],
   },
   plugins: [

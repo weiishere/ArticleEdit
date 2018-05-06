@@ -7,6 +7,8 @@ import './style.less'
 import Bundle from '../util/Bundle';
 import { BrowserRouter, Route,Switch } from 'react-router-dom';
 
+//document.querySelector('html').style.fontSize = `${document.body.clientWidth / 60}px`;
+
 class Root extends Component {
     constructor(props) {
         super(props);
@@ -19,7 +21,9 @@ class Root extends Component {
     //         mainProps: this.props
     //     }
     // }
-
+    componentWillMount(){
+        //attachFastClick(document.body);
+    }
     render() {
         const _height = (window.innerHeight) + 'px';
         const contentStyle = {

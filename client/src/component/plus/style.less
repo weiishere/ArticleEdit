@@ -1,0 +1,42 @@
+._transition {
+    -webkit-transition: all 0.2s ease-out;
+}
+
+.plusWrapper {
+    width: 100%;
+    text-align: center;
+    color: #333;
+    height: 3rem;
+    line-height: 3rem;
+    position: relative;
+    svg {
+        width: 1.5rem;
+        height: 1.5rem;
+        vertical-align: middle;
+        margin: 0 .3rem;
+    }
+    span {
+        vertical-align: middle;
+    }
+    .activePanel {
+        position: absolute;
+        left: 0;
+        right: 0;
+        margin: auto;
+        top: 0;
+        div {
+            display: inline-block;
+            position: relative;
+            svg {
+                width: 1.5rem;
+                height: 1.5rem;
+                margin: 1rem .5rem;
+                box-sizing: border-box;
+                ._transition;
+                &:active {
+                    transform: scale(1.2, 1.2)
+                }
+            }
+        }
+    }
+}
