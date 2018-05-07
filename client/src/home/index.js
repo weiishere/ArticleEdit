@@ -4,8 +4,10 @@ import './style.less';
 import PropTypes from 'prop-types'
 //import actions from './action'
 import { connect } from 'react-redux';
-import { NavBar, Icon, InputItem, Button, List, ImagePicker,Toast } from 'antd-mobile';
+import { NavBar, Icon, InputItem, Button, List, ImagePicker, Toast } from 'antd-mobile';
 import TextEditor from '../component/textEditor';
+import ImgEditor from '../component/imgEditor';
+import Additor from '../component/adEditor';
 import QueueAnim from 'rc-queue-anim';
 import clone from 'clone';
 import Plus from '../component/plus';
@@ -25,30 +27,45 @@ class Home extends React.Component {
                 },
                 {
                     type: 'img',
+                    imgs: [],
                     value: ''
                 },
                 {
                     type: 'ad',
-                    value: "<p><a href='#'>这是第一个文字区域内容</a></p>"
+                    adId: undefined,
+                    value: ""
                 }
             ]
         }
         this.addModuleHandler = this.addModuleHandler.bind(this);
         this.changeCover = this.changeCover.bind(this);
         this.showPreview = this.showPreview.bind(this);
+        this.OkHandler = this.OkHandler.bind(this);
     }
     componentWillUpdate() {
 
     }
     addModuleHandler(type, index) {
+        let _modules = clone(this.state.modules);
         if (type === 'text') {
-            let _modules = clone(this.state.modules);
             _modules.splice(index, 0, {
                 type: 'text',
                 value: '<p></p>'
             });
-            this.setState({ modules: _modules });
+        } else if (type === 'img') {
+            _modules.splice(index, 0, {
+                type: 'img',
+                imgs: [],
+                value: ''
+            });
+        } else if (type === 'ad') {
+            _modules.splice(index, 0, {
+                type: 'img',
+                adId: undefined,
+                value: ''
+            });
         }
+        this.setState({ modules: _modules });
     }
     removeModuleHandler(index) {
         let _modules = clone(this.state.modules);
@@ -60,9 +77,9 @@ class Home extends React.Component {
     }
     showPreview(e) {
         const file = e.target.files[0];
-        if(!/image\/\w+/.test(file.type)){
+        if (!/image\/\w+/.test(file.type)) {
             Toast.info('请选择图片文件', 3);
-            return false;  
+            return false;
         }
         if (window.FileReader && file) {
             var fr = new FileReader();
@@ -74,6 +91,11 @@ class Home extends React.Component {
             };
             fr.readAsDataURL(file);
         }
+    }
+    OkHandler(index, result) {
+        let _modules = clone(this.state.modules);
+        _modules[index].value = result;
+        this.setState({ modules: _modules });
     }
     render() {
         return (
@@ -121,11 +143,19 @@ class Home extends React.Component {
                 {
                     this.state.modules.map((item, index) => {
                         if (item.type === 'text') {
-                            return <TextEditor key={index} initContent={item.value} editOk={(result) => {
-                                let _modules = clone(this.state.modules);
-                                _modules[index].value = result;
-                                this.setState({ modules: _modules });
-                            }}
+                            return <TextEditor key={index} initContent={item.value}
+                                editOk={(result) => { this.OkHandler(index, result); }}
+                                removeHandler={() => { this.removeModuleHandler(index) }}
+                                addHandler={(type) => { this.addModuleHandler(type, index + 1) }} />
+                        } else if (item.type === 'img') {
+                            return <ImgEditor key={index} initContent={item.value} initImgs={item.imgs}
+                                editOk={(result) => { this.OkHandler(index, result); }}
+                                removeHandler={() => { this.removeModuleHandler(index) }}
+                                addHandler={(type) => { this.addModuleHandler(type, index + 1) }} />
+                        }
+                        else if (item.type === 'ad') {
+                            return <Additor key={index} initContent={item.value} initAdId={item.adId}
+                                editOk={(result) => { this.OkHandler(index, result); }}
                                 removeHandler={() => { this.removeModuleHandler(index) }}
                                 addHandler={(type) => { this.addModuleHandler(type, index + 1) }} />
                         }

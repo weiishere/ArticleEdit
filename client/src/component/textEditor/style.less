@@ -5,19 +5,19 @@
 .textEditorWrapper {
     border: solid 1px #999;
     border-radius: .5rem;
-    margin:0 1.2rem;
+    margin: 0 1.2rem;
     background: #fff;
     position: relative;
     .editWrap {
-        position:fixed;
+        position: fixed;
         background: #eee;
         z-index: 100;
         width: 100%;
         height: 100%;
         left: 0;
         top: 0;
-        .ql-toolbar{
-            border:0;
+        .ql-toolbar {
+            border: 0;
             border-top: solid 1px #ccc;
             border-bottom: solid 1px #ccc;
         }
@@ -56,5 +56,40 @@
     }
     .viewWrap {
         padding: 1rem;
+    }
+}
+
+.imgsWrap {
+    display: flex;
+    &>div {
+        flex: 1;
+        text-align: center;
+        margin: .1rem;
+        border: solid 1px #ccc;
+        position: relative;
+        img {
+            padding: .2rem;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        div {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.3);
+            // text-align: center;
+            // line-height: 3rem;
+            right: .2rem;
+            top: .2rem;
+            width: 3rem;
+            height: 3rem;
+            border-radius: 0 0 0 3rem;
+            &:active{
+                background: #ccc;
+            }
+            svg{
+                position: absolute;
+                right: .5rem;
+                top: .5rem;
+            }
+        }
     }
 }
