@@ -4,9 +4,10 @@ const webpack = require('webpack');
 const autoprefixer = require('autoprefixer');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const appPath = path.resolve(__dirname, './');
-const version = '20180321';
-const serverHost = '172.20.10.8';
+const version = 'v1';
+const serverHost = '192.168.31.139';
 const port = 8800;
 
 const webpackConfig = {
@@ -25,8 +26,8 @@ const webpackConfig = {
     dll: ['antd', 'react', 'react-dom', 'react-router-dom']
   },
   output: {
-    path: path.resolve(appPath, 'dist'),
-    filename: '[name].bundle.js', //文件名称
+    path: path.resolve(appPath, `dist/${version}`),
+    filename: `[name].bundle.js`, //文件名称
     publicPath: `/dist/${version}/` //资源上下文路径
   },
 
@@ -63,6 +64,10 @@ const webpackConfig = {
   plugins: [
     new webpack.NamedModulesPlugin(),
     new webpack.HotModuleReplacementPlugin(),
+    new CopyWebpackPlugin([{
+      from: __dirname + '/client/src/source',
+      to: __dirname + `/dist/${version}/source`
+    }]),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       inject: 'body',

@@ -1876,6 +1876,9 @@ a {
 .am-navbar-light .am-navbar-title {
   color: #000;
 }
+.imgTest {
+  background: url(/dist/v1/images/demo.jpg);
+}
 .wrapper {
   width: 100%;
   display: -webkit-box;

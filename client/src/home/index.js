@@ -11,7 +11,6 @@ import Additor from '../component/adEditor';
 import QueueAnim from 'rc-queue-anim';
 import clone from 'clone';
 import Plus from '../component/plus';
-import { fail } from 'assert';
 const Item = List.Item;
 
 class Preview extends React.Component {
@@ -72,11 +71,11 @@ class Home extends React.Component {
                     imgs: [],
                     value: ''
                 },
-                {
-                    type: 'ad',
-                    adId: undefined,
-                    value: ""
-                }
+                // {
+                //     type: 'ad',
+                //     adId: undefined,
+                //     value: ""
+                // }
             ]
         }
         this.addModuleHandler = this.addModuleHandler.bind(this);
