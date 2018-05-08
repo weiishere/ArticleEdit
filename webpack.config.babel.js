@@ -6,7 +6,7 @@ const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const appPath = path.resolve(__dirname, './');
 const version = '20180321';
-const serverHost = '192.168.31.139';
+const serverHost = '172.20.10.8';
 const port = 8800;
 
 const webpackConfig = {

@@ -18,7 +18,7 @@ class ImgEditor extends React.Component {
         this.state = {
             mod: 'view',//edit、show
             imgs: this.props.initImgs,
-            content: this.imgToContent(this.props.initImgs)
+            content: this.props.initContent//this.imgToContent(this.props.initImgs)
         }
         this.selectContent = '';
         this.addImg = this.addImg.bind(this);
@@ -34,7 +34,7 @@ class ImgEditor extends React.Component {
         })
     }
     componentDidMount() {
-
+        //console.log('重载');
     }
     addImg() {
         this.refs.fileInput.click();
@@ -55,7 +55,7 @@ class ImgEditor extends React.Component {
                         var fr = new FileReader();
                         fr.onloadend = (f) => {
                             let _imgs = clone(this.state.imgs);
-                            
+
                             _imgs.push(f.target.result);
                             this.setState({
                                 imgs: _imgs
@@ -125,7 +125,7 @@ class ImgEditor extends React.Component {
                                 rightContent={[
                                     <Icon onClick={() => {
                                         const _content = this.imgToContent();
-                                        this.props.editOk(_content);
+                                        this.props.editOk({ value: _content, imgs: this.state.imgs });
                                         this.setState({
                                             mod: 'view',
                                             content: _content
@@ -133,7 +133,7 @@ class ImgEditor extends React.Component {
                                     }} key="0" type="check" />
                                 ]}
                             >图片编辑</NavBar>
-                            <QueueAnim style={{ height: 'calc(100% - 4rem)', overflow: 'auto' }} animConfig={[
+                            <QueueAnim style={{ height: 'calc(100% - 4rem)', overflow: 'auto', 'overflowScrolling': 'touch' }} animConfig={[
                                 { opacity: [1, 0], scale: [(1, 1), (0.8, 0.8)] }
                             ]}>
                                 {

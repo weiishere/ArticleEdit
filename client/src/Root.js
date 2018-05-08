@@ -32,7 +32,7 @@ class Root extends Component {
             overflow: 'auto',
             display: "inline-block"
         }
-        return <div className='wrapper'>{this.props.children}</div>
+        return this.props.children;
     }
 }
 

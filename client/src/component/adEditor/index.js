@@ -14,6 +14,9 @@ class AdEditor extends React.Component {
         super(props);
         //广告数据，键值对
         this.adList = [[{
+            label: '请选择',
+            value: ""
+        },{
             label: '广告名称1',
             value: "<a href='#'>这是一段广告的链接1</a>"
         }, {
@@ -27,7 +30,7 @@ class AdEditor extends React.Component {
             value: null,
             mod: 'view',//edit、show
             imgs: this.props.initImgs,
-            content: this.adToContent(this.props.initAdId)
+            content: this.props.initContent//this.adToContent(this.props.initAdId)
         }
         this.onChange = this.onChange.bind(this);
     }
