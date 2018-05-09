@@ -65,6 +65,7 @@
     "antd-mobile": "^2.1.8",
     "axios": "^0.18.0",
     "fastclick": "^1.0.6",
+    "jquery": "^3.3.1",
     "lrz": "^4.9.40",
     "rc-queue-anim": "^1.5.0",
     "react": "^16.3.0",

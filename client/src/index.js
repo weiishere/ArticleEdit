@@ -16,17 +16,18 @@ import Root from './Root';
 import Home from './home';
 
 const routes = ({ history, location }) => {
-    return <Route path="/" render={({ history, location }) => (
-        <Root history={history} location={location} >
-            <Switch>
-                <Route breadcrumbName="文章编辑" path="/home" render={({ history, location, match }) => (
-                    <Switch>
-                        <Route breadcrumbName="编辑" path="/home/main" exact component={Home} />
-                    </Switch>
-                )} />
-            </Switch>
-        </Root>
-    )} />
+    return <Route path="/" component={Home} />
+    // return <Route path="/" render={({ history, location }) => (
+    //     <Root history={history} location={location} >
+    //         <Switch>
+    //             <Route breadcrumbName="文章编辑" path="/home" render={({ history, location, match }) => (
+    //                 <Switch>
+    //                     <Route breadcrumbName="编辑" path="/home/main" exact component={Home} />
+    //                 </Switch>
+    //             )} />
+    //         </Switch>
+    //     </Root>
+    // )} />
 }
 
 render(

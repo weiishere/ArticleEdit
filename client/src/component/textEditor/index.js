@@ -8,6 +8,7 @@ import QueueAnim from 'rc-queue-anim';
 import ReactQuill from 'react-quill';
 import Plus from '../plus';
 import Remove from '../remove';
+import Editor from './editor'
 import 'react-quill/dist/quill.snow.css';
 
 
@@ -147,13 +148,15 @@ class ContentEditable extends React.Component {
             </Div></div>;
     }
 };
+
 class TextEditor extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            mod: 'view',//edit、show
+            mod: this.props.initContent ? 'view' : 'edit',//edit、show
             content: this.props.initContent
         }
+        this.inputValue =this.props.initContent;
         this.selectContent = '';
         this.handleChange = this.handleChange.bind(this);
     }
@@ -175,45 +178,12 @@ class TextEditor extends React.Component {
 
     }
     handleChange(html) {
-        this.setState({
-            content: html
-        });
+        // this.setState({
+        //     content: html
+        // });
+        this.inputValue = html;
     }
     render() {
-        //customFormulaHandler
-        const modules = {
-            toolbar: [
-                [{ 'size': ['small', false, 'large', 'huge'] }],
-                ['bold', 'italic', 'underline', 'strike', { 'color': [] }, { 'background': [] }, 'link', { 'align': [] }],
-                ['clean']
-            ],
-        }
-        const formats = [
-            'header',
-            'bold', 'italic', 'underline', 'strike', 'blockquote',
-            'list', 'bullet', 'indent',
-            'link', 'image'
-        ]
-        const CustomToolbar = () => (
-            <div id="toolbar">
-                <select className="ql-header" defaultValue={""} onChange={e => e.persist()}>
-                    <option value="1">大</option>
-                    <option value="2">小</option>
-                    <option selected>正常</option>
-                </select>
-                <button className="ql-bold"></button>
-                <button className="ql-italic"></button>
-                <select className="ql-color">
-                    <option value="red"></option>
-                    <option value="green"></option>
-                    <option value="blue"></option>
-                    <option value="orange"></option>
-                    <option value="violet"></option>
-                    <option value="#d0d1d2"></option>
-                    <option selected></option>
-                </select>
-            </div>
-        )
         return <div>
             <div className='textEditorWrapper'>
                 <QueueAnim delay={0} duration={400} animConfig={[
@@ -235,15 +205,18 @@ class TextEditor extends React.Component {
                                 }}
                                 rightContent={[
                                     <Icon onClick={() => {
-                                        this.props.editOk(this.state.content);
-                                        this.setState({ mod: 'view' });
+                                        this.props.editOk(this.inputValue);
+                                        this.setState({
+                                            mod: 'view',
+                                            content: this.inputValue
+                                        });
                                     }} key="0" type="check" />
                                 ]}
                             >文字编辑</NavBar>
                             {/* <ContentEditable placeholder='' empty={this.emptyHandle} html={this.state.content} onChange={this.editHander} /> */}
-                            <ReactQuill theme="snow" value={this.state.content}
-                                modules={modules}
-                                onChange={this.handleChange} />
+                            <div className="text-editor">
+                                <Editor handleChange={this.handleChange} initContent={this.state.content }/>
+                            </div>
                         </div>
                     }
                 </QueueAnim>

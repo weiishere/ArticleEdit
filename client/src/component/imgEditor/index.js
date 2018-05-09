@@ -14,24 +14,35 @@ import lrz from 'lrz';
 class ImgEditor extends React.Component {
     constructor(props) {
         super(props);
-        this.imgsRow = [];
+        this.imgsRow = []; let temp = [];
+        this.props.initImgs.forEach((img, index) => {
+            if (index % 2 === 0) {
+                temp = [];
+                temp.push(img);
+            } else {
+                temp.push(img);
+                this.imgsRow.push(temp);
+            }
+        });
+        if (temp.length === 1) {
+            this.imgsRow.push(temp);
+        }
         this.state = {
-            mod: 'view',//edit、show
+            mod: this.props.initImgs.length !== 0 ? 'view' : 'edit',//'view',//edit、show
             imgs: this.props.initImgs,
-            content: this.props.initContent//this.imgToContent(this.props.initImgs)
+            content: this.imgToContent(this.props.initImgs)
         }
         this.selectContent = '';
         this.addImg = this.addImg.bind(this);
         this.showPreview = this.showPreview.bind(this);
-        this.imgToContent = this.imgToContent.bind(this);
         this.closeHandler = this.closeHandler.bind(this);
         this.imgToContent = this.imgToContent.bind(this);
 
     }
     componentWillReceiveProps(nextProps) {
-        this.setState({
-            content: nextProps.initContent
-        })
+        // this.setState({
+        //     content: nextProps.initContent
+        // })
     }
     componentDidMount() {
         //console.log('重载');
@@ -109,7 +120,7 @@ class ImgEditor extends React.Component {
                     { opacity: [1, 0], scale: [(1, 1), (0.8, 0.8)] }
                 ]}>
                     {this.state.mod === 'view' ?
-                        <div key='viewWrap' className='viewWrap ql-editor' onClick={() => { this.setState({ mod: 'edit' }) }} dangerouslySetInnerHTML={{ __html: this.state.content }}>
+                        <div key='viewWrap' className='viewWrap ql-editor' onClick={() => { this.setState({ mod: 'edit' }) }} dangerouslySetInnerHTML={{ __html: this.state.content}}>
                         </div>
                         :
                         <div key='editWrap' className='editWrap'>
@@ -118,8 +129,7 @@ class ImgEditor extends React.Component {
                                 icon={<Icon type="left" />}
                                 onLeftClick={() => {
                                     this.setState({
-                                        mod: 'view',
-                                        content: this.props.initContent
+                                        mod: 'view'
                                     })
                                 }}
                                 rightContent={[

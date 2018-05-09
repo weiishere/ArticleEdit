@@ -7,7 +7,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const appPath = path.resolve(__dirname, './');
 const version = 'v1';
-const serverHost = '192.168.31.139';
+const serverHost = 'localhost';
 const port = 8800;
 
 const webpackConfig = {

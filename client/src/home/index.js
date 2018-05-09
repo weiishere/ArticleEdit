@@ -4,6 +4,7 @@ import './style.less';
 import PropTypes from 'prop-types'
 //import actions from './action'
 import { connect } from 'react-redux';
+import $ from 'jquery';
 import { NavBar, Icon, InputItem, Button, List, ImagePicker, Toast } from 'antd-mobile';
 import TextEditor from '../component/textEditor';
 import ImgEditor from '../component/imgEditor';
@@ -45,10 +46,11 @@ class Preview extends React.Component {
                     <h1>{this.props.articleTitle}</h1>
                 </div>
                 <div><span className='date'>{this.getNowFormatDate()}</span><span className='readCount'>阅读：230</span></div>
-                <div className='coverImgWrapper'>
+                <div dangerouslySetInnerHTML={{ __html: this.props.mainContent }}></div>
+                {/* <div className='coverImgWrapper'>
                     <img src={this.props.coverImg} />
-                </div>
-                {this.props.modules.map((item, index) => <div key={index} style={{ marginTop: 10 }} dangerouslySetInnerHTML={{ __html: item.value }}></div>)}
+                </div> */}
+                {/* {this.props.modules.map((item, index) => <div key={index} style={{ marginTop: 10 }} dangerouslySetInnerHTML={{ __html: item.value }}></div>)} */}
             </div>
         </div>
     }
@@ -58,30 +60,32 @@ class Home extends React.Component {
         super(props);
         this.state = {
             preview: false,
-            coverImg: './images/demo.jpg',
-            editer: 'weishere',
-            articleTitle: 'title',
+            coverImg: '',//'./images/demo.jpg',
+            editer: '',
+            articleTitle: '',
             modules: [
-                {
-                    type: 'text',
-                    value: '<p>这是第一个文字区域内容</p>'
-                },
-                {
-                    type: 'img',
-                    imgs: [],
-                    value: ''
-                },
+                // {
+                //     type: 'text',
+                //     value: '<p></p>'
+                // },
+                // {
+                //     type: 'img',
+                //     imgs: ['./images/demo.jpg'],
+                //     value: ''
+                // },
                 // {
                 //     type: 'ad',
-                //     adId: undefined,
+                //     adId: '广告名称1',
                 //     value: ""
                 // }
-            ]
+            ],
+            mainContent: ''
         }
         this.addModuleHandler = this.addModuleHandler.bind(this);
         this.changeCover = this.changeCover.bind(this);
         this.showPreview = this.showPreview.bind(this);
         this.OkHandler = this.OkHandler.bind(this);
+        this.fileChange = this.fileChange.bind(this);
     }
     componentWillUpdate() {
 
@@ -91,7 +95,7 @@ class Home extends React.Component {
         if (type === 'text') {
             _modules.splice(index, 0, {
                 type: 'text',
-                value: '<p></p>'
+                value: ''
             });
         } else if (type === 'img') {
             _modules.splice(index, 0, {
@@ -116,7 +120,7 @@ class Home extends React.Component {
     changeCover() {
         this.refs.fileInput.click();
     }
-    showPreview(e) {
+    fileChange(e) {
         const file = e.target.files[0];
         if (!/image\/\w+/.test(file.type)) {
             Toast.info('请选择图片文件', 3);
@@ -127,11 +131,22 @@ class Home extends React.Component {
             fr.onloadend = (e) => {
                 //document.getElementById("portrait").src = e.target.result;
                 this.setState({
-                    coverImg: e.target.result
+                    coverImg: e.target.result,
                 });
             };
             fr.readAsDataURL(file);
         }
+    }
+    showPreview() {
+        let _html = '';
+        $("#mainContent .viewWrap").each((index, item) => {
+            _html += $(item).prop("outerHTML");
+        })
+        this.setState({
+            preview: true,
+            mainContent: _html
+        });
+
     }
     OkHandler(index, result) {
         let _modules = clone(this.state.modules);
@@ -147,16 +162,12 @@ class Home extends React.Component {
                         icon={<Icon type="left" />}
                         onLeftClick={() => console.log('onLeftClick')}
                         rightContent={[
-                            <Icon key="0" type="search" onClick={() => {
-                                this.setState({
-                                    preview: true
-                                });
-                            }} />
+                            <Icon key="0" type="search" onClick={this.showPreview} />
                         ]}
                     >文章编辑</NavBar>
                     <div className='mainContent'>
                         <div className='imgCover'>
-                            <img src={this.state.coverImg} />
+                            {this.state.coverImg ? <img src={this.state.coverImg} /> : <center style={{ margin: '2rem auto' }}>请选择封面</center>}
                         </div>
                         <List>
                             <Item>
@@ -164,6 +175,7 @@ class Home extends React.Component {
                                     <div className='onside_left'>
                                         <InputItem
                                             placeholder="请输入编辑人"
+                                            maxLength='20'
                                             clear
                                             value={this.state.editer}
                                             moneyKeyboardAlign="left"
@@ -172,7 +184,7 @@ class Home extends React.Component {
                                     </div>
                                     <div className='onside_right'>
                                         <Button type="primary" onClick={this.changeCover}>更换封面</Button>
-                                        <input style={{ display: 'none' }} ref='fileInput' type="file" name="file" onChange={this.showPreview} />
+                                        <input style={{ display: 'none' }} ref='fileInput' type="file" name="file" onChange={this.fileChange} />
                                     </div>
                                 </section>
                             </Item>
@@ -180,39 +192,43 @@ class Home extends React.Component {
                                 <InputItem
                                     placeholder="请输入文章标题"
                                     clear
+                                    maxLength='30'
                                     value={this.state.articleTitle}
                                     moneyKeyboardAlign="left"
                                     onChange={(value) => { this.setState({ articleTitle: value }) }}
                                 >标题</InputItem>
                             </Item>
                         </List>
-                        <Plus addHandler={(type) => this.addModuleHandler(type, 0)} />
-                        {
-                            this.state.modules.map((item, index) => {
-                                if (item.type === 'text') {
-                                    return <TextEditor key={index} initContent={item.value}
-                                        editOk={(result) => { this.OkHandler(index, result); }}
-                                        removeHandler={() => { this.removeModuleHandler(index) }}
-                                        addHandler={(type) => { this.addModuleHandler(type, index + 1) }} />
-                                } else if (item.type === 'img') {
-                                    return <ImgEditor key={index} initContent={item.value} initImgs={item.imgs}
-                                        editOk={(result) => {
-                                            let _modules = clone(this.state.modules);
-                                            _modules[index].value = result.value;
-                                            _modules[index].imgs = result.imgs;
-                                            this.setState({ modules: _modules });
-                                        }}
-                                        removeHandler={() => { this.removeModuleHandler(index) }}
-                                        addHandler={(type) => { this.addModuleHandler(type, index + 1) }} />
-                                }
-                                else if (item.type === 'ad') {
-                                    return <Additor key={index} initContent={item.value} initAdId={item.adId}
-                                        editOk={(result) => { this.OkHandler(index, result); }}
-                                        removeHandler={() => { this.removeModuleHandler(index) }}
-                                        addHandler={(type) => { this.addModuleHandler(type, index + 1) }} />
-                                }
-                            })
-                        }
+                        {this.state.modules.length === 0 && <Plus addHandler={(type) => this.addModuleHandler(type, 0)} />}
+                        <br />
+                        <div id='mainContent'>
+                            {
+                                this.state.modules.map((item, index) => {
+                                    if (item.type === 'text') {
+                                        return <TextEditor key={index} initContent={item.value}
+                                            editOk={(result) => { this.OkHandler(index, result); }}
+                                            removeHandler={() => { this.removeModuleHandler(index) }}
+                                            addHandler={(type) => { this.addModuleHandler(type, index + 1) }} />
+                                    } else if (item.type === 'img') {
+                                        return <ImgEditor key={index} initContent={item.value} initImgs={item.imgs}
+                                            editOk={(result) => {
+                                                let _modules = clone(this.state.modules);
+                                                _modules[index].value = result.value;
+                                                _modules[index].imgs = result.imgs;
+                                                this.setState({ modules: _modules });
+                                            }}
+                                            removeHandler={() => { this.removeModuleHandler(index) }}
+                                            addHandler={(type) => { this.addModuleHandler(type, index + 1) }} />
+                                    }
+                                    else if (item.type === 'ad') {
+                                        return <Additor key={index} initContent={item.value} initAdId={item.adId}
+                                            editOk={(result) => { this.OkHandler(index, result); }}
+                                            removeHandler={() => { this.removeModuleHandler(index) }}
+                                            addHandler={(type) => { this.addModuleHandler(type, index + 1) }} />
+                                    }
+                                })
+                            }
+                        </div>
                     </div>
                 </div>
                 {this.state.preview && <Preview key='preview' {...this.state} onBack={() => {

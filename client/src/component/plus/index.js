@@ -21,10 +21,12 @@ class Plus extends React.Component {
     }
     render() {
         return <QueueAnim className='plusWrapper'>
-            {this.state.mod === 'init' ? <div key='init' onClick={() => {
-                this.setState({ mod: 'active' });
-            }}>
-                <svg t="1525435538230"
+            {this.state.mod === 'init' ? <div key='init'>
+                <svg
+                    onClick={() => {
+                        this.setState({ mod: 'active' });
+                    }}
+                    t="1525435538230"
                     viewBox="0 0 1024 1024"
                     version="1.1"
                     xmlns="http://www.w3.org/2000/svg"

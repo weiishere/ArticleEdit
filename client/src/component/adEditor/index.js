@@ -28,25 +28,27 @@ class AdEditor extends React.Component {
         }]];
         this.state = {
             value: null,
-            mod: this.props.initContent ? 'view' : 'edit',//edit、show
-            content: this.props.initContent//this.adToContent(this.props.initAdId)
+            mod: this.props.initAdId ? 'view' : 'edit',//edit、show
+            content: this.adToContent(this.props.initAdId)
         }
         this.onChange = this.onChange.bind(this);
     }
     componentWillReceiveProps(nextProps) {
-        this.setState({
-            content: nextProps.initContent
-        })
+        // this.setState({
+        //     content: nextProps.initContent
+        // })
     }
     componentDidMount() {
 
     }
     adToContent(adName) {
+        let result = '';
         this.adList[0].forEach(item => {
             if (item.label === adName) {
-                return item.value;
+                result = item.value;
             }
         });
+        return result;
     }
     onChange(value) {
         this.setState({
@@ -79,7 +81,7 @@ class AdEditor extends React.Component {
                                     <Icon onClick={() => {
                                         this.props.editOk(this.state.content);
                                         this.setState({
-                                            mod: 'view',
+                                            mod: 'view'
                                         });
                                     }} key="0" type="check" />
                                 ]}
