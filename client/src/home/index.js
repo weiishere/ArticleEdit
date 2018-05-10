@@ -58,16 +58,17 @@ class Preview extends React.Component {
 class Home extends React.Component {
     constructor(props) {
         super(props);
+        const articleData = JSON.parse(document.querySelector('#articleData').value);
         this.state = {
             preview: false,
-            coverImg: '',//'./images/demo.jpg',
-            editer: '',
-            articleTitle: '',
+            coverImg: articleData.cover_img_url,//'./images/demo.jpg',
+            editer: articleData.author,
+            articleTitle: articleData.title,
             modules: [
-                // {
-                //     type: 'text',
-                //     value: '<p></p>'
-                // },
+                {
+                    type: 'text',
+                    value: articleData.content
+                },
                 // {
                 //     type: 'img',
                 //     imgs: ['./images/demo.jpg'],
