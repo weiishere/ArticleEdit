@@ -5129,6 +5129,7 @@ a {
   border-top: solid 1px #ccc;
   padding: 1rem;
   overflow: auto;
+  height: 90%;
 }
 .previewWrapper .previewBody h1 {
   font-size: 1.3rem;
@@ -6707,7 +6708,7 @@ a {
   white-space: nowrap;
 }
 .ql-snow .ql-tooltip::before {
-  content: "Visit URL:";
+  content: "\94FE\63A5:";
   line-height: 26px;
   margin-right: 8px;
 }
@@ -6730,12 +6731,12 @@ a {
 }
 .ql-snow .ql-tooltip a.ql-action::after {
   border-right: 1px solid #ccc;
-  content: 'Edit';
+  content: '\7F16\8F91';
   margin-left: 16px;
   padding-right: 8px;
 }
 .ql-snow .ql-tooltip a.ql-remove::before {
-  content: 'Remove';
+  content: '\79FB\9664';
   margin-left: 8px;
 }
 .ql-snow .ql-tooltip a {
@@ -6750,11 +6751,11 @@ a {
 }
 .ql-snow .ql-tooltip.ql-editing a.ql-action::after {
   border-right: 0px;
-  content: 'Save';
+  content: '\4FDD\5B58';
   padding-right: 0px;
 }
 .ql-snow .ql-tooltip[data-mode=link]::before {
-  content: "Enter link:";
+  content: "\8BF7\8F93\5165\94FE\63A5:";
 }
 .ql-snow .ql-tooltip[data-mode=formula]::before {
   content: "Enter formula:";

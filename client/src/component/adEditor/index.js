@@ -28,8 +28,8 @@ class AdEditor extends React.Component {
         }]];
         this.state = {
             value: null,
-            mod: this.props.initAdId ? 'view' : 'edit',//edit、show
-            content: this.adToContent(this.props.initAdId)
+            mod: this.props.hasEdit ? 'view' : 'edit',//edit、show
+            content: this.props.initContent//this.adToContent(this.props.initAdId)
         }
         this.onChange = this.onChange.bind(this);
     }
@@ -75,7 +75,8 @@ class AdEditor extends React.Component {
                                     this.setState({
                                         mod: 'view',
                                         content: this.props.initContent
-                                    })
+                                    });
+                                    this.props.done();
                                 }}
                                 rightContent={[
                                     <Icon onClick={() => {
@@ -83,6 +84,7 @@ class AdEditor extends React.Component {
                                         this.setState({
                                             mod: 'view'
                                         });
+                                        //this.props.done();
                                     }} key="0" type="check" />
                                 ]}
                             >广告选择</NavBar>

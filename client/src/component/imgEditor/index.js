@@ -27,8 +27,9 @@ class ImgEditor extends React.Component {
         if (temp.length === 1) {
             this.imgsRow.push(temp);
         }
+        console.log(this.props.hasEdit);
         this.state = {
-            mod: this.props.initImgs.length !== 0 ? 'view' : 'edit',//'view',//edit、show
+            mod: this.props.hasEdit ? 'view' : 'edit',//'view',//edit、show
             imgs: this.props.initImgs,
             content: this.imgToContent(this.props.initImgs)
         }
@@ -96,7 +97,7 @@ class ImgEditor extends React.Component {
             html += "</div>";
         })
         if (this.imgsRow.length === 0) {
-            html = "<center>请选择图片</center>";
+            html = "";
         }
         return html;
     }
@@ -130,7 +131,8 @@ class ImgEditor extends React.Component {
                                 onLeftClick={() => {
                                     this.setState({
                                         mod: 'view'
-                                    })
+                                    });
+                                    this.props.done();
                                 }}
                                 rightContent={[
                                     <Icon onClick={() => {
@@ -140,6 +142,7 @@ class ImgEditor extends React.Component {
                                             mod: 'view',
                                             content: _content
                                         });
+                                        //this.props.done();
                                     }} key="0" type="check" />
                                 ]}
                             >图片编辑</NavBar>

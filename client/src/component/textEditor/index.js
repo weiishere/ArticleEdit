@@ -153,7 +153,7 @@ class TextEditor extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            mod: this.props.initContent ? 'view' : 'edit',//edit、show
+            mod: this.props.hasEdit ? 'view' : 'edit',//edit、show
             content: this.props.initContent
         }
         this.inputValue =this.props.initContent;
@@ -201,7 +201,8 @@ class TextEditor extends React.Component {
                                     this.setState({
                                         mod: 'view',
                                         content: this.props.initContent
-                                    })
+                                    });
+                                    this.props.done();
                                 }}
                                 rightContent={[
                                     <Icon onClick={() => {
@@ -210,6 +211,7 @@ class TextEditor extends React.Component {
                                             mod: 'view',
                                             content: this.inputValue
                                         });
+                                        //this.props.done();
                                     }} key="0" type="check" />
                                 ]}
                             >文字编辑</NavBar>

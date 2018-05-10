@@ -34,7 +34,7 @@ class Preview extends React.Component {
         return currentdate;
     }
     render() {
-        return <div className='previewWrapper'>
+        return <div className='previewWrapper' style={{ display: this.props.visible ? 'block' : 'none' }}>
             <NavBar
                 mode="light"
                 icon={<Icon type="left" onClick={this.props.onBack} />}
@@ -67,7 +67,8 @@ class Home extends React.Component {
             modules: [
                 {
                     type: 'text',
-                    value: articleData.content
+                    value: articleData.content,
+                    hasEdit: true
                 },
                 // {
                 //     type: 'img',
@@ -96,19 +97,22 @@ class Home extends React.Component {
         if (type === 'text') {
             _modules.splice(index, 0, {
                 type: 'text',
-                value: ''
+                value: '',
+                hasEdit: false
             });
         } else if (type === 'img') {
             _modules.splice(index, 0, {
                 type: 'img',
                 imgs: [],
-                value: ''
+                value: '',
+                hasEdit: false
             });
         } else if (type === 'ad') {
             _modules.splice(index, 0, {
                 type: 'ad',
                 adId: undefined,
-                value: ''
+                value: '',
+                hasEdit: false
             });
         }
         this.setState({ modules: _modules });
@@ -152,6 +156,12 @@ class Home extends React.Component {
     OkHandler(index, result) {
         let _modules = clone(this.state.modules);
         _modules[index].value = result;
+        _modules[index].hasEdit = true;
+        this.setState({ modules: _modules });
+    }
+    CancleHandler(index) {
+        let _modules = clone(this.state.modules);
+        _modules[index].hasEdit = true;
         this.setState({ modules: _modules });
     }
     render() {
@@ -206,24 +216,28 @@ class Home extends React.Component {
                             {
                                 this.state.modules.map((item, index) => {
                                     if (item.type === 'text') {
-                                        return <TextEditor key={index} initContent={item.value}
+                                        return <TextEditor key={index} initContent={item.value} hasEdit={item.hasEdit}
                                             editOk={(result) => { this.OkHandler(index, result); }}
+                                            done={() => this.CancleHandler(index)}
                                             removeHandler={() => { this.removeModuleHandler(index) }}
                                             addHandler={(type) => { this.addModuleHandler(type, index + 1) }} />
                                     } else if (item.type === 'img') {
-                                        return <ImgEditor key={index} initContent={item.value} initImgs={item.imgs}
+                                        return <ImgEditor key={index} initContent={item.value} initImgs={item.imgs} hasEdit={item.hasEdit}
                                             editOk={(result) => {
                                                 let _modules = clone(this.state.modules);
                                                 _modules[index].value = result.value;
                                                 _modules[index].imgs = result.imgs;
+                                                _modules[index].hasEdit = true;
                                                 this.setState({ modules: _modules });
                                             }}
+                                            done={() => this.CancleHandler(index)}
                                             removeHandler={() => { this.removeModuleHandler(index) }}
                                             addHandler={(type) => { this.addModuleHandler(type, index + 1) }} />
                                     }
                                     else if (item.type === 'ad') {
-                                        return <Additor key={index} initContent={item.value} initAdId={item.adId}
+                                        return <Additor key={index} initContent={item.value} initAdId={item.adId} hasEdit={item.hasEdit}
                                             editOk={(result) => { this.OkHandler(index, result); }}
+                                            done={() => this.CancleHandler(index)}
                                             removeHandler={() => { this.removeModuleHandler(index) }}
                                             addHandler={(type) => { this.addModuleHandler(type, index + 1) }} />
                                     }
@@ -232,7 +246,7 @@ class Home extends React.Component {
                         </div>
                     </div>
                 </div>
-                {this.state.preview && <Preview key='preview' {...this.state} onBack={() => {
+                {<Preview key='preview' {...this.state} visible={this.state.preview} onBack={() => {
                     this.setState({ preview: false });
                 }} />}
             </QueueAnim>
