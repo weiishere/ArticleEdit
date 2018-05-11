@@ -168,15 +168,15 @@ class Home extends React.Component {
         return (
             <QueueAnim className='wrapper'>
                 <div>
-                    <NavBar
-                        mode="light"
-                        icon={<Icon type="left" />}
-                        onLeftClick={() => console.log('onLeftClick')}
-                        rightContent={[
-                            <Icon key="0" type="search" onClick={this.showPreview} />
-                        ]}
-                    >文章编辑</NavBar>
                     <div className='mainContent'>
+                        <NavBar
+                            mode="light"
+                            icon={<Icon type="left" />}
+                            onLeftClick={() => console.log('onLeftClick')}
+                            rightContent={[
+                                <Icon key="0" type="search" onClick={this.showPreview} />
+                            ]}
+                        >文章编辑</NavBar>
                         <div className='imgCover'>
                             {this.state.coverImg ? <img src={this.state.coverImg} /> : <center style={{ margin: '2rem auto' }}>请选择封面</center>}
                         </div>
