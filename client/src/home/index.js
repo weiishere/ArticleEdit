@@ -14,6 +14,9 @@ import clone from 'clone';
 import Plus from '../component/plus';
 const Item = List.Item;
 
+
+
+
 class Preview extends React.Component {
     constructor(props) {
         super(props);
@@ -89,8 +92,23 @@ class Home extends React.Component {
         this.OkHandler = this.OkHandler.bind(this);
         this.fileChange = this.fileChange.bind(this);
     }
-    componentWillUpdate() {
-
+    componentDidMount() {
+        const self = this;
+        $("body").on('click', ".imgsWrap img", function () {
+            if (!self.state.preview) { return; }
+            $('body').append("<div class='mb-wrapper imgShow'><img src='" + $(this).attr('src') + "'/></div>");
+            window.setTimeout(function () {
+                $('.imgShow>img').addClass('show');
+            }, 50);
+            $(".imgShow").one("click", function () {
+                
+                var _self = this;
+                $(this).find("img").removeClass('show');
+                window.setTimeout(function () {
+                    $(_self).remove();
+                }, 300);
+            });
+        })
     }
     addModuleHandler(type, index) {
         let _modules = clone(this.state.modules);
