@@ -4,8 +4,15 @@ import homeStyle from './style.less';
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux';
 import QueueAnim from 'rc-queue-anim';
-import { Modal } from 'antd-mobile';
+import { Modal, ActionSheet } from 'antd-mobile';
 const alert = Modal.alert;
+const isIPhone = new RegExp('\\biPhone\\b|\\biPod\\b', 'i').test(window.navigator.userAgent);
+let wrapProps;
+if (isIPhone) {
+    wrapProps = {
+        onTouchStart: e => e.preventDefault(),
+    };
+}
 
 class Remove extends React.Component {
     constructor(props) {
@@ -15,10 +22,29 @@ class Remove extends React.Component {
     render() {
         return <div className='deleteIcon' key='init'
             onClick={() =>
-                alert('删除内容', '您确定要删除此内容吗？', [
-                    { text: '取消', onPress: () => { } },
-                    { text: '确定', onPress: () => this.props.removeHandler() },
-                ])
+            // alert('删除内容', '您确定要删除此内容吗？', [
+            //     { text: '取消', onPress: () => { } },
+            //     { text: '确定', onPress: () => this.props.removeHandler() },
+            // ])
+            {
+                const BUTTONS = ['删除', '取消'];
+                ActionSheet.showActionSheetWithOptions({
+                    options: BUTTONS,
+                    cancelButtonIndex: BUTTONS.length - 1,
+                    destructiveButtonIndex: BUTTONS.length - 2,
+                    //title: '删除内容',
+                    message: '您确定要删除此内容吗？',
+                    maskClosable: true,
+                    'data-seed': 'logId',
+                    wrapProps,
+                },
+                    (buttonIndex) => {
+                        if (buttonIndex === 0) {
+                            this.props.removeHandler();
+                        }
+                        //this.setState({ clicked: BUTTONS[buttonIndex] });
+                    });
+            }
             }
         // onClick={() => {
         //     this.props.removeHandler();
