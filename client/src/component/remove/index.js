@@ -27,28 +27,28 @@ class Remove extends React.Component {
             //     { text: '确定', onPress: () => this.props.removeHandler() },
             // ])
             {
-                const BUTTONS = ['删除', '取消'];
-                ActionSheet.showActionSheetWithOptions({
-                    options: BUTTONS,
-                    cancelButtonIndex: BUTTONS.length - 1,
-                    destructiveButtonIndex: BUTTONS.length - 2,
-                    //title: '删除内容',
-                    message: '您确定要删除此内容吗？',
-                    maskClosable: true,
-                    'data-seed': 'logId',
-                    wrapProps,
-                },
-                    (buttonIndex) => {
-                        if (buttonIndex === 0) {
-                            this.props.removeHandler();
-                        }
-                        //this.setState({ clicked: BUTTONS[buttonIndex] });
-                    });
+                if (confirm('您确定要删除此内容吗？')) {
+                    this.props.removeHandler();
+                }
+                // const BUTTONS = ['删除', '取消'];
+                // ActionSheet.showActionSheetWithOptions({
+                //     options: BUTTONS,
+                //     cancelButtonIndex: BUTTONS.length - 1,
+                //     destructiveButtonIndex: BUTTONS.length - 2,
+                //     //title: '删除内容',
+                //     message: '您确定要删除此内容吗？',
+                //     maskClosable: true,
+                //     'data-seed': 'logId',
+                //     wrapProps,
+                // },
+                //     (buttonIndex) => {
+                //         if (buttonIndex === 0) {
+                //             this.props.removeHandler();
+                //         }
+                //         //this.setState({ clicked: BUTTONS[buttonIndex] });
+                //     });
             }
             }
-        // onClick={() => {
-        //     this.props.removeHandler();
-        // }}
         >
             <svg t="1525435538230"
                 viewBox="0 0 1024 1024"

@@ -27,7 +27,7 @@ class ImgEditor extends React.Component {
         if (temp.length === 1) {
             this.imgsRow.push(temp);
         }
-        console.log(this.props.hasEdit);
+        //console.log(this.props.hasEdit);
         this.state = {
             mod: this.props.hasEdit ? 'view' : 'edit',//'view',//edit、show
             imgs: this.props.initImgs,
