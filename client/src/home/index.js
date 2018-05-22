@@ -48,7 +48,7 @@ class Preview extends React.Component {
                 <div>
                     <h1>{this.props.articleTitle}</h1>
                 </div>
-                <div><span className='date'>{this.getNowFormatDate()}</span><span className='readCount'>阅读：230</span></div>
+                <div><span className='date'>{this.getNowFormatDate()}&nbsp;&nbsp;{this.props.editer}</span><span className='readCount'>阅读：230</span></div>
                 <div dangerouslySetInnerHTML={{ __html: this.props.mainContent }}></div>
                 {/* <div className='coverImgWrapper'>
                     <img src={this.props.coverImg} />
