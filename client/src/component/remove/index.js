@@ -76,9 +76,6 @@ class Remove extends React.Component {
                 // );
             }
             }
-        // onClick={() => {
-        //     this.props.removeHandler();
-        // }}
         >
             {this.state.testDom}
             <svg t="1525435538230"
