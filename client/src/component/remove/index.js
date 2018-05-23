@@ -5,7 +5,9 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux';
 import QueueAnim from 'rc-queue-anim';
 import { Modal, ActionSheet } from 'antd-mobile';
-const alert = Modal.alert;
+import MessageBox from '../messageBox'
+import $ from 'jquery';
+//const alert = Modal.alert;
 const isIPhone = new RegExp('\\biPhone\\b|\\biPod\\b', 'i').test(window.navigator.userAgent);
 let wrapProps;
 if (isIPhone) {
@@ -17,9 +19,12 @@ if (isIPhone) {
 class Remove extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            testDom: null
+        }
     }
     render() {
+
         return <div className='deleteIcon' key='init'
             onClick={() =>
             // alert('删除内容', '您确定要删除此内容吗？', [
@@ -27,29 +32,55 @@ class Remove extends React.Component {
             //     { text: '确定', onPress: () => this.props.removeHandler() },
             // ])
             {
-                const BUTTONS = ['删除', '取消'];
-                ActionSheet.showActionSheetWithOptions({
-                    options: BUTTONS,
-                    cancelButtonIndex: BUTTONS.length - 1,
-                    destructiveButtonIndex: BUTTONS.length - 2,
-                    //title: '删除内容',
-                    message: '您确定要删除此内容吗？',
-                    maskClosable: true,
-                    'data-seed': 'logId',
-                    wrapProps,
-                },
-                    (buttonIndex) => {
-                        if (buttonIndex === 0) {
-                            this.props.removeHandler();
-                        }
-                        //this.setState({ clicked: BUTTONS[buttonIndex] });
-                    });
+                const _self = this;
+                $('body').append(new MessageBox("您确定要删除此内容吗？",
+                    ['确定', function () {
+                        _self.props.removeHandler();
+                    }], ['取消', function () {
+
+                    }]));
+                // var itemProps = {
+                //     className: 'testClass',
+                //     onClick: function onClick() {
+
+                //     }
+                // };
+                // const dom = React.createElement(
+                //     'div',
+                //     itemProps,
+                //     "content"
+                // )
+                // this.setState({
+                //     testDom: dom
+                // })
+                // const BUTTONS = ['删除', <button
+                //     onClick={() => {
+                //         alert('delete');
+                //     }}
+                // >取消</button>];
+                // ActionSheet.showActionSheetWithOptions({
+                //     options: BUTTONS,
+                //     cancelButtonIndex: BUTTONS.length - 1,
+                //     destructiveButtonIndex: BUTTONS.length - 2,
+                //     //title: '删除内容',
+                //     message: '您确定要删除此内容吗？',
+                //     maskClosable: true,
+                //     'data-seed': 'logId',
+                //     wrapProps,
+                // }
+                //     // , (buttonIndex) => {
+                //     //     if (buttonIndex === 0) {
+                //     //         this.props.removeHandler();
+                //     //     }
+                //     // }
+                // );
             }
             }
         // onClick={() => {
         //     this.props.removeHandler();
         // }}
         >
+            {this.state.testDom}
             <svg t="1525435538230"
                 viewBox="0 0 1024 1024"
                 version="1.1"
@@ -61,5 +92,8 @@ class Remove extends React.Component {
 
     }
 }
+
+
+
 
 export default Remove;
