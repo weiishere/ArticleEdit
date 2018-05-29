@@ -29,14 +29,15 @@ class AdEditor extends React.Component {
         this.state = {
             value: null,
             mod: this.props.hasEdit ? 'view' : 'edit',//edit、show
-            content: this.props.initContent//this.adToContent(this.props.initAdId)
+            adId: this.props.initAdId,
+            content: this.adToContent(this.props.initAdId)
         }
         this.onChange = this.onChange.bind(this);
     }
     componentWillReceiveProps(nextProps) {
-        // this.setState({
-        //     content: nextProps.initContent
-        // })
+        this.setState({
+            content: this.adToContent(nextProps.initAdId)
+        })
     }
     componentDidMount() {
 
@@ -51,9 +52,11 @@ class AdEditor extends React.Component {
         return result;
     }
     onChange(value) {
+        const _adId = this.adList[0].find(item => item.value === value[0]).label;
         this.setState({
             value,
-            content: value[0]
+            adId: _adId,
+            content: this.adToContent(this.props.initAdId)//value[0]
         });
     }
     render() {
@@ -74,13 +77,13 @@ class AdEditor extends React.Component {
                                 onLeftClick={() => {
                                     this.setState({
                                         mod: 'view',
-                                        content: this.props.initContent
+                                        //content: this.props.initContent
                                     });
                                     this.props.done();
                                 }}
                                 rightContent={[
                                     <Icon onClick={() => {
-                                        this.props.editOk(this.state.content);
+                                        this.props.editOk({ value: this.state.content, adId: this.state.adId });
                                         this.setState({
                                             mod: 'view'
                                         });

@@ -21,6 +21,9 @@ const Item = List.Item;
 class Preview extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            pageLoading: false
+        }
         this.publish = this.publish.bind(this);
     }
     getNowFormatDate() {
@@ -41,21 +44,42 @@ class Preview extends React.Component {
     publish() {
         const articleData = JSON.parse(document.querySelector('#articleData').value);
         //console.log('process.env.NODE_ENV:' + process.env.NODE_ENV);
-        axios.post((process.env.NODE_ENV === 'development' ? '/api' : '') + '/PersonalCenter/Article/SaveEditing2', {
+        this.setState({ pageLoading: true });
+        axios.post((process.env.NODE_ENV === 'development' ? '/api' : '') + '/PersonalCenter/Article/SaveArtJson', {
             ArtId: articleData.ArtId,
-            Title: this.props.articleTitle,
-            Author: this.props.editer,
-            Cover: this.props.coverImg,
-            Content: this.props.mainContent
-        }).then(res => {
-            if (res.data.success) {
-                Toast.info('发布成功！', 2);
-            } else {
-                Toast.info('发布失败！', 2);
-            }
+            json: JSON.stringify(this.props.modules.map(item => {
+                switch (item.type) {
+                    case 'text':
+                        return { type: item.type, value: item.value, hasEdit: true };
+                    case 'img':
+                        return { type: item.type, imgs: item.imgs, hasEdit: true };
+                    case 'ad':
+                        return { type: item.type, adId: item.adId, hasEdit: true };
+                }
+            }))
+        }).then(req => {
+            console.log(req.data);
+            axios.post((process.env.NODE_ENV === 'development' ? '/api' : '') + '/PersonalCenter/Article/SaveEditing2', {
+                ArtId: articleData.ArtId,
+                Title: this.props.articleTitle,
+                Author: this.props.editer,
+                Cover: this.props.coverImg,
+                Content: $('.previewWrapper').html()//this.props.mainContent
+            }).then(res => {
+                this.setState({ pageLoading: false });
+                if (res.data.success) {
+                    Toast.info('发布成功！', 2);
+                } else {
+                    Toast.info('发布失败！', 2);
+                }
+            }).catch(error => {
+                this.setState({ pageLoading: false });
+                Toast.info('发布出现异常，请检查网络！', 2);
+            });
         }).catch(error => {
-            Toast.info('发布出现异常，请检查网络！', 2);
-        })
+            this.setState({ pageLoading: false });
+            Toast.info('数据获取异常，请检查网络！', 2);
+        });
     }
     render() {
         return <div className='previewWrapper' style={{ display: this.props.visible ? 'block' : 'none' }}>
@@ -76,6 +100,13 @@ class Preview extends React.Component {
                 </div> */}
                 {/* {this.props.modules.map((item, index) => <div key={index} style={{ marginTop: 10 }} dangerouslySetInnerHTML={{ __html: item.value }}></div>)} */}
             </div>
+            {this.state.pageLoading && <div className="toast-example">
+                <ActivityIndicator
+                    toast
+                    text="请稍后..."
+                    animating={true}
+                />
+            </div>}
         </div>
     }
 }
@@ -86,6 +117,7 @@ class Home extends React.Component {
         this.state = {
             preview: false,
             isUploding: false,
+            pageLoading: false,
             coverImg: articleData.cover_img_url,//'./images/demo.jpg',
             editer: articleData.author,
             articleTitle: articleData.title,
@@ -115,6 +147,8 @@ class Home extends React.Component {
         this.fileChange = this.fileChange.bind(this);
     }
     componentDidMount() {
+        //console.log(process.env.NODE_ENV);
+        const articleData = JSON.parse(document.querySelector('#articleData').value);
         const self = this;
         $("body").on('click', ".imgsWrap img", function () {
             if (!self.state.preview) { return; }
@@ -123,14 +157,24 @@ class Home extends React.Component {
                 $('.imgShow>img').addClass('show');
             }, 50);
             $(".imgShow").one("click", function () {
-
                 var _self = this;
                 $(this).find("img").removeClass('show');
                 window.setTimeout(function () {
                     $(_self).remove();
                 }, 300);
             });
-        })
+        });
+        this.setState({ pageLoading: true });
+        axios.post((process.env.NODE_ENV === 'development' ? '/api' : '') + '/PersonalCenter/Article/GetArtJson', { ArtId: articleData.ArtId }).then(req => {
+            this.setState({
+                modules: req.data,
+                pageLoading: false
+            });
+            console.log(req.data);
+        }).catch(error => {
+            this.setState({ pageLoading: false });
+            Toast.info('数据获取异常，请检查网络！', 2);
+        });
     }
     addModuleHandler(type, index) {
         let _modules = clone(this.state.modules);
@@ -290,7 +334,13 @@ class Home extends React.Component {
                                     }
                                     else if (item.type === 'ad') {
                                         return <Additor key={index} initContent={item.value} initAdId={item.adId} hasEdit={item.hasEdit}
-                                            editOk={(result) => { this.OkHandler(index, result); }}
+                                            editOk={(result, adId) => {
+                                                let _modules = clone(this.state.modules);
+                                                _modules[index].value = result.value;
+                                                _modules[index].adId = result.adId;
+                                                _modules[index].hasEdit = true;
+                                                this.setState({ modules: _modules });
+                                            }}
                                             done={() => this.CancleHandler(index)}
                                             removeHandler={() => { this.removeModuleHandler(index) }}
                                             addHandler={(type) => { this.addModuleHandler(type, index + 1) }} />
@@ -303,6 +353,13 @@ class Home extends React.Component {
                         <ActivityIndicator
                             toast
                             text="图片上传中，请稍后..."
+                            animating={true}
+                        />
+                    </div>}
+                    {this.state.pageLoading && <div className="toast-example">
+                        <ActivityIndicator
+                            toast
+                            text="请稍后..."
                             animating={true}
                         />
                     </div>}
