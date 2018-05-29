@@ -1,9 +1,10 @@
 import { findDOMNode } from 'react-dom';
 import React, { Component } from 'react';
 import homeStyle from '../textEditor/style.less';
+import axios from 'axios';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { NavBar, Icon, InputItem, Button, List, WingBlank } from 'antd-mobile';
+import { NavBar, Icon, InputItem, Button, List, WingBlank, ActivityIndicator, Toast } from 'antd-mobile';
 import QueueAnim from 'rc-queue-anim';
 import clone from 'clone';
 import Plus from '../plus';
@@ -31,7 +32,8 @@ class ImgEditor extends React.Component {
         this.state = {
             mod: this.props.hasEdit ? 'view' : 'edit',//'view',//edit、show
             imgs: this.props.initImgs,
-            content: this.imgToContent(this.props.initImgs)
+            content: this.imgToContent(this.props.initImgs),
+            isUploding: false
         }
         this.selectContent = '';
         this.addImg = this.addImg.bind(this);
@@ -54,29 +56,49 @@ class ImgEditor extends React.Component {
     showPreview(e) {
         const files = e.target.files;
         if (window.FileReader && files) {
+            let count = files.length;
+            this.setState({ isUploding: true });
             Array.prototype.slice.call(files).forEach(file => {
                 if (!/image\/\w+/.test(file.type)) {
                     Toast.info('请选择图片文件', 3);
+                    this.setState({ isUploding: false });
                 } else {
+                    var formData = new FormData();
+                    formData.append('file', file);
+                    axios.post((process.env.NODE_ENV === 'development' ? '/api' : '') + '/Upload/ImgUpload', formData).then(req => {
+                        let _imgs = clone(this.state.imgs);
+                        _imgs.push('http://wxgzh.zongzong.kunxiangtech.cn/' + req.data.result);
+                        this.setState({
+                            imgs: _imgs
+                        });
+                        Toast.info('图片上传成功！', 2);
+                        count--;
+                        if (count === 0) {
+                            this.setState({ isUploding: false });
+                        }
+                    }).catch(error => {
+                        this.setState({ isUploding: false });
+                        Toast.info('出现异常，请检查网络！', 2);
+                    })
                     //此处将进行图片上传（fromData方式传入file），返回回来图片url，将f.target.result替换即可
                     //客户端首先对图片进行压缩(最大宽度不超过800px)
-                    lrz(file, {
-                        width: 800,
-                        quality: 1
-                    }).then(() => {
-                        var fr = new FileReader();
-                        fr.onloadend = (f) => {
-                            let _imgs = clone(this.state.imgs);
+                    // lrz(file, {
+                    //     width: 800,
+                    //     quality: 1
+                    // }).then(() => {
+                    //     var fr = new FileReader();
+                    //     fr.onloadend = (f) => {
+                    //         let _imgs = clone(this.state.imgs);
 
-                            _imgs.push(f.target.result);
-                            this.setState({
-                                imgs: _imgs
-                            });
-                        };
-                        fr.readAsDataURL(file);
-                    }).catch(function (err) {
-                        alert("图片压缩失败，请检查文件是否损坏~");
-                    });
+                    //         _imgs.push(f.target.result);
+                    //         this.setState({
+                    //             imgs: _imgs
+                    //         });
+                    //     };
+                    //     fr.readAsDataURL(file);
+                    // }).catch(function (err) {
+                    //     alert("图片压缩失败，请检查文件是否损坏~");
+                    // });
                 }
             });
         }
@@ -121,7 +143,7 @@ class ImgEditor extends React.Component {
                     { opacity: [1, 0], scale: [(1, 1), (0.8, 0.8)] }
                 ]}>
                     {this.state.mod === 'view' ?
-                        <div key='viewWrap' className='viewWrap ql-editor' onClick={() => { this.setState({ mod: 'edit' }) }} dangerouslySetInnerHTML={{ __html: this.state.content}}>
+                        <div key='viewWrap' className='viewWrap ql-editor' onClick={() => { this.setState({ mod: 'edit' }) }} dangerouslySetInnerHTML={{ __html: this.state.content }}>
                         </div>
                         :
                         <div key='editWrap' className='editWrap'>
@@ -158,8 +180,17 @@ class ImgEditor extends React.Component {
                                 }
                                 <br />
                                 <WingBlank><Button onClick={this.addImg}>添加图片</Button></WingBlank>
-                                <input style={{ display: 'none' }} multiple="multiple" ref='fileInput' type="file" name="file" onChange={this.showPreview} />
+                                <form id="uploadForm" encType="multipart/form-data">
+                                    <input style={{ display: 'none' }} multiple="multiple" ref='fileInput' type="file" name="file" onChange={this.showPreview} />
+                                </form>
                             </QueueAnim>
+                            {this.state.isUploding && <div className="toast-example">
+                                <ActivityIndicator
+                                    toast
+                                    text="图片上传中，请稍后..."
+                                    animating={true}
+                                />
+                            </div>}
                         </div>
                     }
                 </QueueAnim>

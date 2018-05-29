@@ -5,11 +5,12 @@ import PropTypes from 'prop-types'
 //import actions from './action'
 import { connect } from 'react-redux';
 import $ from 'jquery';
-import { NavBar, Icon, InputItem, Button, List, ImagePicker, Toast } from 'antd-mobile';
+import { NavBar, Icon, InputItem, Button, List, ImagePicker, ActivityIndicator, Toast } from 'antd-mobile';
 import TextEditor from '../component/textEditor';
 import ImgEditor from '../component/imgEditor';
 import Additor from '../component/adEditor';
 import QueueAnim from 'rc-queue-anim';
+import axios from 'axios';
 import clone from 'clone';
 import Plus from '../component/plus';
 const Item = List.Item;
@@ -20,6 +21,7 @@ const Item = List.Item;
 class Preview extends React.Component {
     constructor(props) {
         super(props);
+        this.publish = this.publish.bind(this);
     }
     getNowFormatDate() {
         const date = new Date();
@@ -36,13 +38,32 @@ class Preview extends React.Component {
         const currentdate = year + seperator1 + month + seperator1 + strDate;
         return currentdate;
     }
+    publish() {
+        const articleData = JSON.parse(document.querySelector('#articleData').value);
+        //console.log('process.env.NODE_ENV:' + process.env.NODE_ENV);
+        axios.post((process.env.NODE_ENV === 'development' ? '/api' : '') + '/PersonalCenter/Article/SaveEditing2', {
+            ArtId: articleData.ArtId,
+            Title: this.props.articleTitle,
+            Author: this.props.editer,
+            Cover: this.props.coverImg,
+            Content: this.props.mainContent
+        }).then(res => {
+            if (res.data.success) {
+                Toast.info('发布成功！', 2);
+            } else {
+                Toast.info('发布失败！', 2);
+            }
+        }).catch(error => {
+            Toast.info('发布出现异常，请检查网络！', 2);
+        })
+    }
     render() {
         return <div className='previewWrapper' style={{ display: this.props.visible ? 'block' : 'none' }}>
             <NavBar
                 mode="light"
                 icon={<Icon type="left" onClick={this.props.onBack} />}
                 onLeftClick={() => console.log('onLeftClick')}
-                rightContent='发布'
+                rightContent={<a href='javascript:;' onClick={this.publish}>发布</a>}
             >文章预览</NavBar>
             <div className='previewBody'>
                 <div>
@@ -64,6 +85,7 @@ class Home extends React.Component {
         const articleData = JSON.parse(document.querySelector('#articleData').value);
         this.state = {
             preview: false,
+            isUploding: false,
             coverImg: articleData.cover_img_url,//'./images/demo.jpg',
             editer: articleData.author,
             articleTitle: articleData.title,
@@ -101,7 +123,7 @@ class Home extends React.Component {
                 $('.imgShow>img').addClass('show');
             }, 50);
             $(".imgShow").one("click", function () {
-                
+
                 var _self = this;
                 $(this).find("img").removeClass('show');
                 window.setTimeout(function () {
@@ -144,20 +166,34 @@ class Home extends React.Component {
         this.refs.fileInput.click();
     }
     fileChange(e) {
-        const file = e.target.files[0];
-        if (!/image\/\w+/.test(file.type)) {
-            Toast.info('请选择图片文件', 3);
-            return false;
-        }
-        if (window.FileReader && file) {
-            var fr = new FileReader();
-            fr.onloadend = (e) => {
-                //document.getElementById("portrait").src = e.target.result;
+        const files = e.target.files;
+        if (window.FileReader && files) {
+            const file = files[0];
+            if (!/image\/\w+/.test(file.type)) {
+                Toast.info('请选择图片文件', 3);
+                return false;
+            }
+            this.setState({ isUploding: true });
+            var formData = new FormData();
+            formData.append('file', file);
+            axios.post((process.env.NODE_ENV === 'development' ? '/api' : '') + '/Upload/ImgUpload', formData).then(req => {
                 this.setState({
-                    coverImg: e.target.result,
+                    coverImg: 'http://wxgzh.zongzong.kunxiangtech.cn/' + req.data.result
                 });
-            };
-            fr.readAsDataURL(file);
+                Toast.info('图片上传成功！', 2);
+                this.setState({ isUploding: false });
+            }).catch(error => {
+                this.setState({ isUploding: false });
+                Toast.info('出现异常，请检查网络！', 2);
+            })
+            // var fr = new FileReader();
+            // fr.onloadend = (e) => {
+            //     //document.getElementById("portrait").src = e.target.result;
+            //     this.setState({
+            //         coverImg: e.target.result,
+            //     });
+            // };
+            // fr.readAsDataURL(file);
         }
     }
     showPreview() {
@@ -263,6 +299,13 @@ class Home extends React.Component {
                             }
                         </div>
                     </div>
+                    {this.state.isUploding && <div className="toast-example">
+                        <ActivityIndicator
+                            toast
+                            text="图片上传中，请稍后..."
+                            animating={true}
+                        />
+                    </div>}
                 </div>
                 {<Preview key='preview' {...this.state} visible={this.state.preview} onBack={() => {
                     this.setState({ preview: false });

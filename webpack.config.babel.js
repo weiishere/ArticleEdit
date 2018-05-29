@@ -7,7 +7,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const appPath = path.resolve(__dirname, './');
 const version = 'v1';
-const serverHost = '172.20.10.9';
+const serverHost = 'localhost';
 const port = 8800;
 
 const webpackConfig = {
@@ -97,6 +97,13 @@ const webpackConfig = {
     watchContentBase: true,
     watchOptions: {
       poll: 500
+    },
+    proxy: {
+      "/api": {
+        target: "http://wxgzh.zongzong.kunxiangtech.cn/",
+        pathRewrite: { "^/api": "" },
+        changeOrigin: true
+      }
     }
   }
 };

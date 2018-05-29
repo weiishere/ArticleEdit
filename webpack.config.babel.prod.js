@@ -12,9 +12,12 @@ module.exports = merge(config, {
       comments: false,
       sourceMap: false
     }),
-    new webpack.optimize.UglifyJsPlugin({
-      compress: process.env.NODE_ENV === 'production'
-    })
+    new webpack.DefinePlugin({
+      "process.env.NODE_ENV": JSON.stringify("production")
+    }),
+    // new webpack.optimize.UglifyJsPlugin({
+    //   compress: process.env.NODE_ENV === 'production'
+    // })
   ]
 })
 
