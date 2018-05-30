@@ -4,6 +4,7 @@ import homeStyle from '../textEditor/style.less';
 import PropTypes from 'prop-types';
 import { NavBar, Icon, InputItem, Button, List, PickerView } from 'antd-mobile';
 import QueueAnim from 'rc-queue-anim';
+import $ from 'jquery';
 import clone from 'clone';
 import Plus from '../plus';
 import Remove from '../remove';
@@ -13,19 +14,26 @@ class AdEditor extends React.Component {
     constructor(props) {
         super(props);
         //广告数据，键值对
-        this.adList = [[{
-            label: '请选择',
-            value: ""
-        }, {
-            label: '广告名称1',
-            value: "<a href='#'>这是一段广告的链接1</a>"
-        }, {
-            label: '广告名称2',
-            value: "<a href='#'>这是一段广告的链接2</a>"
-        }, {
-            label: '广告名称3',
-            value: "<a href='#'>这是一段广告的链接3</a>"
-        }]];
+        this.adList = this.props.adList ? [this.props.adList.map((item, index) => {
+            return {
+                label: item.label,
+                value: 'lv_' + index,
+                html: item.value,
+            }
+        })] : [[]];
+        // this.adList =[[{
+        //     label: '请选择',
+        //     value: ""
+        // }, {
+        //     label: '广告名称1',
+        //     value: "<a href='#'>这是一段广告的链接2</a>"
+        // }, {
+        //     label: '广告名称2',
+        //     value: "<a href='#'>这是一段广告的链接2</a>"
+        // }, {
+        //     label: '广告名称3',
+        //     value: "<a href='#'>这是一段广告的链接3</a>"
+        // }]];
         this.state = {
             value: null,
             mod: this.props.hasEdit ? 'view' : 'edit',//edit、show
@@ -37,16 +45,25 @@ class AdEditor extends React.Component {
     componentWillReceiveProps(nextProps) {
         this.setState({
             content: this.adToContent(nextProps.initAdId)
-        })
+        });
+        this.adList = this.props.adList ? [this.props.adList.map((item, index) => {
+            return {
+                label: item.label,
+                value: 'lv_' + index,
+                html: item.value,
+            }
+        })] : [[]];
     }
     componentDidMount() {
-
+        $("body").delegate('.viewWrap a', 'click', function (event) {
+            event.preventDefault();
+        });
     }
     adToContent(adName) {
         let result = '';
         this.adList[0].forEach(item => {
             if (item.label === adName) {
-                result = item.value;
+                result = item.html;
             }
         });
         return result;
@@ -67,7 +84,9 @@ class AdEditor extends React.Component {
                     { opacity: [1, 0], scale: [(1, 1), (0.8, 0.8)] }
                 ]}>
                     {this.state.mod === 'view' ?
-                        <div key='viewWrap' className='viewWrap ql-editor' onClick={() => { this.setState({ mod: 'edit' }) }} dangerouslySetInnerHTML={{ __html: this.state.content }}>
+                        <div key='viewWrap' className='viewWrap ql-editor' onClick={(e) => {
+                            this.setState({ mod: 'edit' })
+                        }} dangerouslySetInnerHTML={{ __html: this.state.content }}>
                         </div>
                         :
                         <div key='editWrap' className='editWrap'>

@@ -19,13 +19,13 @@ module.exports = extend(config, {
     new ExtractTextPlugin({
       filename: "css/app.min.css"
     }),
-    new webpack.DefinePlugin({
-      compress: {
-        warnings: false
-      },
-      comments: false,
-      sourceMap: false
-    }),
+    // new webpack.DefinePlugin({
+    //   compress: {
+    //     warnings: false
+    //   },
+    //   comments: false,
+    //   sourceMap: false
+    // }),
     new webpack.DefinePlugin({
       "process.env.NODE_ENV": JSON.stringify("production")
     }),

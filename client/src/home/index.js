@@ -145,6 +145,7 @@ class Home extends React.Component {
         this.showPreview = this.showPreview.bind(this);
         this.OkHandler = this.OkHandler.bind(this);
         this.fileChange = this.fileChange.bind(this);
+        this.adList;
     }
     componentDidMount() {
         //console.log(process.env.NODE_ENV);
@@ -166,11 +167,20 @@ class Home extends React.Component {
         });
         this.setState({ pageLoading: true });
         axios.post((process.env.NODE_ENV === 'development' ? '/api' : '') + '/PersonalCenter/Article/GetArtJson', { ArtId: articleData.ArtId }).then(req => {
-            this.setState({
-                modules: req.data,
-                pageLoading: false
+            // this.setState({
+            //     modules: req.data
+            // });
+            //console.log(req.data);
+            axios.post((process.env.NODE_ENV === 'development' ? '/api' : '') + '/PersonalCenter/Article/GetArtAd', {}).then(req2 => {
+                this.adList = req2.data;
+                this.setState({
+                    modules: req.data || [],
+                    pageLoading: false
+                });
+            }).catch(error => {
+                this.setState({ pageLoading: false });
+                Toast.info('数据获取异常，请检查网络！', 2);
             });
-            console.log(req.data);
         }).catch(error => {
             this.setState({ pageLoading: false });
             Toast.info('数据获取异常，请检查网络！', 2);
@@ -334,6 +344,7 @@ class Home extends React.Component {
                                     }
                                     else if (item.type === 'ad') {
                                         return <Additor key={index} initContent={item.value} initAdId={item.adId} hasEdit={item.hasEdit}
+                                            adList={this.adList}
                                             editOk={(result, adId) => {
                                                 let _modules = clone(this.state.modules);
                                                 _modules[index].value = result.value;
