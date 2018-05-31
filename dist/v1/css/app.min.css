@@ -5216,13 +5216,15 @@ a {
   -webkit-box-flex: 1;
       -ms-flex: 1;
           flex: 1;
-  border-top: solid 1px #ccc;
   padding: 1rem;
   overflow: auto;
-  height: 90%;
+  height: 100%;
 }
 .previewWrapper .previewBody h1 {
   font-size: 1.3rem;
+}
+.previewWrapper .previewBody .ql-editor {
+  padding: 12px 0;
 }
 .previewWrapper span.date {
   color: #666;
@@ -5307,6 +5309,7 @@ a {
 }
 .textEditorWrapper .editWrap .ql-container {
   border: 0;
+  font-size: 1rem !important;
 }
 .textEditorWrapper .editWrap .editBar {
   background: #fff;

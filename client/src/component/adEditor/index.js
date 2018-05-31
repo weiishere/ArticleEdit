@@ -34,11 +34,12 @@ class AdEditor extends React.Component {
         //     label: '广告名称3',
         //     value: "<a href='#'>这是一段广告的链接3</a>"
         // }]];
+        this.defaultInitAdId = this.adList[0].length !== 0 ? this.adList[0][0].label : '';
         this.state = {
             value: null,
             mod: this.props.hasEdit ? 'view' : 'edit',//edit、show
-            adId: this.props.initAdId,
-            content: this.adToContent(this.props.initAdId)
+            adId: this.props.initAdId || this.defaultInitAdId,
+            content: this.adToContent(this.props.initAdId || this.defaultInitAdId)
         }
         this.onChange = this.onChange.bind(this);
     }

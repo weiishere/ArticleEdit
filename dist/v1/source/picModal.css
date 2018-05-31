@@ -1,3 +1,7 @@
+body {
+    background: #fff;
+    font-size: 16px;
+}
 .mb-wrapper {
     position: absolute;
     top: 0;
@@ -46,4 +50,88 @@
 .mb-wrapper.imgShow img.show {
     opacity: 1;
     -webkit-transform: translate3d(0, 0, 0);
+}
+
+
+
+.mb-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.2);
+    z-index: 10000;
+    -webkit-transition: all 0.2s ease-out;
+    -moz-transition: all 0.2s ease-out;
+}
+
+.mb-wrapper.mb-hide {
+    opacity: 0
+}
+
+.mb-wrapper.load {
+    text-align: center;
+    line-height: 40;
+    color: #666;
+    background: rgba(255, 255, 255, 0.7);
+}
+
+.mb-wrapper.imgShow {
+    text-align: center;
+    background: rgba(0, 0, 0, 0.7);
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.mb-wrapper.imgShow img {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    margin: auto;
+    max-width: 90%;
+    border: solid 0.2rem #eee;
+    border-radius: .5rem;
+    opacity: 0;
+    -webkit-transform: translate3d(0, -2rem, 0);
+    -webkit-transition: all 0.2s ease-out;
+}
+
+.mb-wrapper.imgShow img.show {
+    opacity: 1;
+    -webkit-transform: translate3d(0, 0, 0);
+}
+
+.previewBody {
+    flex: 1;
+    padding: 1rem;
+}
+
+.previewBody h1 {
+    font-size: 1.3rem;
+}
+
+.ql-editor {
+    white-space: inherit;
+    height: auto;
+    padding: 12px 0;
+}
+
+.previewBody span.date {
+    color: #666;
+}
+
+span.readCount {
+    color: #666;
+    float: right;
+}
+
+.coverImgWrapper {
+    margin: 2rem 0 1rem 0;
+}
+
+.coverImgWrapper img {
+    width: 100%
 }

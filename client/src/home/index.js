@@ -50,11 +50,11 @@ class Preview extends React.Component {
             json: JSON.stringify(this.props.modules.map(item => {
                 switch (item.type) {
                     case 'text':
-                        return { type: item.type, value: item.value, hasEdit: true };
+                        return { id: item.id, type: item.type, value: item.value, hasEdit: true };
                     case 'img':
-                        return { type: item.type, imgs: item.imgs, hasEdit: true };
+                        return { id: item.id, type: item.type, imgs: item.imgs, hasEdit: true };
                     case 'ad':
-                        return { type: item.type, adId: item.adId, hasEdit: true };
+                        return { id: item.id, type: item.type, adId: item.adId, hasEdit: true };
                 }
             }))
         }).then(req => {
@@ -64,7 +64,7 @@ class Preview extends React.Component {
                 Title: this.props.articleTitle,
                 Author: this.props.editer,
                 Cover: this.props.coverImg,
-                Content: $('.previewWrapper').html()//this.props.mainContent
+                Content: $('.previewBody').prop("outerHTML")//this.props.mainContent
             }).then(res => {
                 this.setState({ pageLoading: false });
                 if (res.data.success) {
@@ -122,11 +122,11 @@ class Home extends React.Component {
             editer: articleData.author,
             articleTitle: articleData.title,
             modules: [
-                {
-                    type: 'text',
-                    value: articleData.content,
-                    hasEdit: true
-                },
+                // {
+                //     type: 'text',
+                //     value: articleData.content,
+                //     hasEdit: true
+                // },
                 // {
                 //     type: 'img',
                 //     imgs: ['./images/demo.jpg'],
@@ -190,12 +190,14 @@ class Home extends React.Component {
         let _modules = clone(this.state.modules);
         if (type === 'text') {
             _modules.splice(index, 0, {
+                id: Date.parse(new Date()),
                 type: 'text',
                 value: '',
                 hasEdit: false
             });
         } else if (type === 'img') {
             _modules.splice(index, 0, {
+                id: Date.parse(new Date()),
                 type: 'img',
                 imgs: [],
                 value: '',
@@ -203,6 +205,7 @@ class Home extends React.Component {
             });
         } else if (type === 'ad') {
             _modules.splice(index, 0, {
+                id: Date.parse(new Date()),
                 type: 'ad',
                 adId: undefined,
                 value: '',
@@ -324,13 +327,13 @@ class Home extends React.Component {
                             {
                                 this.state.modules.map((item, index) => {
                                     if (item.type === 'text') {
-                                        return <TextEditor key={index} initContent={item.value} hasEdit={item.hasEdit}
+                                        return <TextEditor key={item.id} initContent={item.value} hasEdit={item.hasEdit}
                                             editOk={(result) => { this.OkHandler(index, result); }}
                                             done={() => this.CancleHandler(index)}
                                             removeHandler={() => { this.removeModuleHandler(index) }}
                                             addHandler={(type) => { this.addModuleHandler(type, index + 1) }} />
                                     } else if (item.type === 'img') {
-                                        return <ImgEditor key={index} initContent={item.value} initImgs={item.imgs} hasEdit={item.hasEdit}
+                                        return <ImgEditor key={item.id} initContent={item.value} initImgs={item.imgs} hasEdit={item.hasEdit}
                                             editOk={(result) => {
                                                 let _modules = clone(this.state.modules);
                                                 _modules[index].value = result.value;
@@ -343,7 +346,7 @@ class Home extends React.Component {
                                             addHandler={(type) => { this.addModuleHandler(type, index + 1) }} />
                                     }
                                     else if (item.type === 'ad') {
-                                        return <Additor key={index} initContent={item.value} initAdId={item.adId} hasEdit={item.hasEdit}
+                                        return <Additor key={item.id} initContent={item.value} initAdId={item.adId} hasEdit={item.hasEdit}
                                             adList={this.adList}
                                             editOk={(result, adId) => {
                                                 let _modules = clone(this.state.modules);
