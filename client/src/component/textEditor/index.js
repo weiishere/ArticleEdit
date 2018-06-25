@@ -216,8 +216,8 @@ class TextEditor extends React.Component {
                                 ]}
                             >文字编辑</NavBar>
                             {/* <ContentEditable placeholder='' empty={this.emptyHandle} html={this.state.content} onChange={this.editHander} /> */}
-                            <div className="text-editor">
-                                <Editor handleChange={this.handleChange} initContent={this.state.content }/>
+                            <div className={`text-editor editor_${this.props.codeIndex}`}>
+                                <Editor codeIndex={this.props.codeIndex} handleChange={this.handleChange} initContent={this.state.content }/>
                             </div>
                         </div>
                     }

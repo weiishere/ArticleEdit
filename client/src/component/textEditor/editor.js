@@ -2,6 +2,26 @@
 import React, { Component } from 'react';
 import ReactQuill from 'react-quill';
 import PropTypes from 'prop-types';
+import $ from 'jquery';
+String.prototype.trim = function () {
+    return this.replace(/^\s+/, '').replace(/\s+$/, '');
+}
+const po_Last_Div = (obj) => {
+    if (window.getSelection) {//ie11 10 9 ff safari
+        obj.focus(); //解决ff不获取焦点无法定位问题
+        var range = window.getSelection();//创建range
+        range.selectAllChildren(obj);//range 选择obj下所有子内容
+        range.collapseToEnd();//光标移至最后
+    }
+    else if (document.selection) {//ie10 9 8 7 6 5
+        var range = document.selection.createRange();//创建选择对象
+        //var range = document.body.createTextRange();
+        range.moveToElementText(obj);//range定位到obj
+        range.collapse(false);//光标移至最后
+        range.select();
+    }
+}
+
 const CustomButton = () => <span className="">
     <svg
         t="1525435538230"
@@ -61,13 +81,27 @@ const CustomToolbar = () => (
 class Editor extends Component {
     constructor(props) {
         super(props);
-        this.state = { editorHtml: "" };
+        this.state = { editorHtml: "", initContent: this.props.initContent };
         this.handleChange = this.handleChange.bind(this);
     }
 
     handleChange(html) {
+        const t = $(html)[0].innerText;
+
         this.props.handleChange(html);
+        //this.props.handleChange(html);
         //this.setState({ editorHtml: html });
+        if (t.trim() === '') {
+            this.setState({
+                initContent: '<p>&nbsp;</p>'
+            }, () => {
+                po_Last_Div($('.editor_' + this.props.codeIndex + ' .ql-editor')[0]);
+            })
+        } else {
+            this.setState({
+                initContent: html
+            });
+        }
     }
 
     render() {
@@ -75,11 +109,12 @@ class Editor extends Component {
             <div className="text-editor">
                 <CustomToolbar />
                 <ReactQuill
+                    ref='editor'
                     onChange={this.handleChange}
                     placeholder={this.props.placeholder}
                     modules={Editor.modules}
                     formats={Editor.formats}
-                    value={this.props.initContent}
+                    value={this.state.initContent}
                     theme={"snow"} // pass false to use minimal theme
                 />
             </div>

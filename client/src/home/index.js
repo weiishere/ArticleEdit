@@ -192,7 +192,7 @@ class Home extends React.Component {
             _modules.splice(index, 0, {
                 id: Date.parse(new Date()),
                 type: 'text',
-                value: '',
+                value: '<p>&nbsp;</p>',
                 hasEdit: false
             });
         } else if (type === 'img') {
@@ -330,6 +330,7 @@ class Home extends React.Component {
                                         return <TextEditor key={item.id} initContent={item.value} hasEdit={item.hasEdit}
                                             editOk={(result) => { this.OkHandler(index, result); }}
                                             done={() => this.CancleHandler(index)}
+                                            codeIndex={index}
                                             removeHandler={() => { this.removeModuleHandler(index) }}
                                             addHandler={(type) => { this.addModuleHandler(type, index + 1) }} />
                                     } else if (item.type === 'img') {
