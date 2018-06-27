@@ -63,43 +63,43 @@ class ImgEditor extends React.Component {
                     Toast.info('请选择图片文件', 3);
                     this.setState({ isUploding: false });
                 } else {
-                    // var formData = new FormData();
-                    // formData.append('file', file);
-                    // axios.post((process.env.NODE_ENV === 'development' ? '/api' : '') + '/Upload/ImgUpload', formData).then(req => {
-                    //     let _imgs = clone(this.state.imgs);
-                    //     _imgs.push('http://wxgzh.zongzong.kunxiangtech.cn/' + req.data.result);
-                    //     this.setState({
-                    //         imgs: _imgs
-                    //     });
-                    //     Toast.info('图片上传成功！', 2);
-                    //     count--;
-                    //     if (count === 0) {
-                    //         this.setState({ isUploding: false });
-                    //     }
-                    // }).catch(error => {
-                    //     this.setState({ isUploding: false });
-                    //     Toast.info('出现异常，请检查网络！', 2);
-                    // })
+                    var formData = new FormData();
+                    formData.append('file', file);
+                    axios.post((process.env.NODE_ENV === 'development' ? '/api' : '') + '/Upload/ImgUpload', formData).then(req => {
+                        let _imgs = clone(this.state.imgs);
+                        _imgs.push('http://wxgzh.zongzong.kunxiangtech.cn/' + req.data.result);
+                        this.setState({
+                            imgs: _imgs
+                        });
+                        Toast.info('图片上传成功！', 2);
+                        count--;
+                        if (count === 0) {
+                            this.setState({ isUploding: false });
+                        }
+                    }).catch(error => {
+                        this.setState({ isUploding: false });
+                        Toast.info('出现异常，请检查网络！', 2);
+                    })
 
                     //此处将进行图片上传（fromData方式传入file），返回回来图片url，将f.target.result替换即可
                     //客户端首先对图片进行压缩(最大宽度不超过800px)
-                    lrz(file, {
-                        width: 800,
-                        quality: 1
-                    }).then(() => {
-                        var fr = new FileReader();
-                        fr.onloadend = (f) => {
-                            let _imgs = clone(this.state.imgs);
+                    // lrz(file, {
+                    //     width: 800,
+                    //     quality: 1
+                    // }).then(() => {
+                    //     var fr = new FileReader();
+                    //     fr.onloadend = (f) => {
+                    //         let _imgs = clone(this.state.imgs);
 
-                            _imgs.push(f.target.result);
-                            this.setState({
-                                imgs: _imgs
-                            });
-                        };
-                        fr.readAsDataURL(file);
-                    }).catch(function (err) {
-                        alert("图片压缩失败，请检查文件是否损坏~");
-                    });
+                    //         _imgs.push(f.target.result);
+                    //         this.setState({
+                    //             imgs: _imgs
+                    //         });
+                    //     };
+                    //     fr.readAsDataURL(file);
+                    // }).catch(function (err) {
+                    //     alert("图片压缩失败，请检查文件是否损坏~");
+                    // });
                 }
             });
         }
