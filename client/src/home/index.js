@@ -279,7 +279,7 @@ class Home extends React.Component {
         return (
             <QueueAnim className='wrapper'>
                 <div>
-                    <div className='mainContent'>
+                    <div className='mainContent' style={{ paddingBottom: '5rem' }}>
                         <NavBar
                             mode="light"
                             icon={<Icon type="left" />}

@@ -5160,7 +5160,6 @@ a {
       -ms-flex: 1;
           flex: 1;
   -webkit-overflow-scrolling: touch;
-  overflow: auto;
 }
 .imgCover img {
   width: 100%;
@@ -5284,6 +5283,9 @@ a {
   background: #fff;
   position: relative;
 }
+.textEditorWrapper .text-editor {
+  height: 100%;
+}
 .textEditorWrapper .editWrap {
   position: fixed;
   background: #eee;
@@ -5319,7 +5321,7 @@ a {
   margin: 3rem 1rem 1rem 1rem;
   border-radius: .5rem;
   background: #fff;
-  height: 30rem;
+  height: 20rem;
   padding: .5rem;
 }
 .textEditorWrapper .viewWrap {
@@ -6451,7 +6453,7 @@ a {
   white-space: nowrap;
 }
 .ql-snow .ql-tooltip::before {
-  content: "\94FE\63A5:";
+  content: "Visit URL:";
   line-height: 26px;
   margin-right: 8px;
 }
@@ -6474,12 +6476,12 @@ a {
 }
 .ql-snow .ql-tooltip a.ql-action::after {
   border-right: 1px solid #ccc;
-  content: '\7F16\8F91';
+  content: 'Edit';
   margin-left: 16px;
   padding-right: 8px;
 }
 .ql-snow .ql-tooltip a.ql-remove::before {
-  content: '\79FB\9664';
+  content: 'Remove';
   margin-left: 8px;
 }
 .ql-snow .ql-tooltip a {
@@ -6494,11 +6496,11 @@ a {
 }
 .ql-snow .ql-tooltip.ql-editing a.ql-action::after {
   border-right: 0px;
-  content: '\4FDD\5B58';
+  content: 'Save';
   padding-right: 0px;
 }
 .ql-snow .ql-tooltip[data-mode=link]::before {
-  content: "\8BF7\8F93\5165\94FE\63A5:";
+  content: "Enter link:";
 }
 .ql-snow .ql-tooltip[data-mode=formula]::before {
   content: "Enter formula:";
