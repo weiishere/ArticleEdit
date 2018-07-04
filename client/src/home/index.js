@@ -278,7 +278,7 @@ class Home extends React.Component {
     render() {
         return (
             <QueueAnim className='wrapper'>
-                <div>
+                <div style={{ display: this.state.preview ? 'none' : 'block' }}>
                     <div className='mainContent' style={{ paddingBottom: '5rem' }}>
                         <NavBar
                             mode="light"

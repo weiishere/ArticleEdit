@@ -5189,10 +5189,11 @@ a {
   margin-right: .5rem;
 }
 .previewWrapper {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
+  height: auto;
   background: #fff;
   z-index: 1000;
   display: -webkit-box;
@@ -5209,7 +5210,7 @@ a {
           flex: 1;
   padding: 1rem;
   overflow: auto;
-  height: 95%;
+  background: #fff;
 }
 .previewWrapper .previewBody h1 {
   font-size: 1.3rem;
@@ -5364,6 +5365,21 @@ a {
   right: .5rem;
   top: .5rem;
 }
+.ql-snow .ql-tooltip[data-mode=link]::before {
+  content: "\8F93\5165\94FE\63A5\FF1A" !important;
+}
+.ql-snow .ql-tooltip.ql-editing a.ql-action::after {
+  content: "\4FDD\5B58" !important;
+}
+.ql-snow .ql-tooltip a.ql-action::after {
+  content: "\7F16\8F91" !important;
+}
+.ql-snow .ql-tooltip::before {
+  content: "\8DF3\8F6C\94FE\63A5" !important;
+}
+.ql-snow .ql-tooltip a.ql-remove::before {
+  content: "\79FB\9664" !important;
+}
 ._transition {
   -webkit-transition: all 0.2s ease-out;
 }
@@ -5374,6 +5390,7 @@ a {
   height: 3rem;
   line-height: 3rem;
   position: relative;
+  overflow: hidden;
 }
 .plusWrapper svg {
   width: 1.5rem;
@@ -5443,7 +5460,7 @@ a {
   border: solid 1px #000;
 }
 .mb-wrapper {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
