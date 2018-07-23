@@ -166,7 +166,7 @@ class Home extends React.Component {
             });
         });
         this.setState({ pageLoading: true });
-        axios.post((process.env.NODE_ENV === 'development' ? '/api' : '') + '/PersonalCenter/Article/GetArtJson', { ArtId: articleData.ArtId }).then(req => {
+        axios.post((process.env.NODE_ENV === 'development' ? '/api' : '') + '/PersonalCenter/Article/GetArtJson', { ArtId: 1529 }).then(req => {
             // this.setState({
             //     modules: req.data
             // });
@@ -190,14 +190,14 @@ class Home extends React.Component {
         let _modules = clone(this.state.modules);
         if (type === 'text') {
             _modules.splice(index, 0, {
-                id: Date.parse(new Date()),
+                id: Date.parse(new Date()) + '-' + parseInt(Math.random() * 1000000),
                 type: 'text',
                 value: '<p>&nbsp;</p>',
                 hasEdit: false
             });
         } else if (type === 'img') {
             _modules.splice(index, 0, {
-                id: Date.parse(new Date()),
+                id: Date.parse(new Date()) + '-' + parseInt(Math.random() * 1000000),
                 type: 'img',
                 imgs: [],
                 value: '',
@@ -205,7 +205,7 @@ class Home extends React.Component {
             });
         } else if (type === 'ad') {
             _modules.splice(index, 0, {
-                id: Date.parse(new Date()),
+                id: Date.parse(new Date()) + '-' + parseInt(Math.random() * 1000000),
                 type: 'ad',
                 adId: undefined,
                 value: '',
