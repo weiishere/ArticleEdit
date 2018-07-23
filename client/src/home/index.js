@@ -43,9 +43,10 @@ class Preview extends React.Component {
     }
     publish() {
         const articleData = JSON.parse(document.querySelector('#articleData').value);
+        const appid = document.querySelector('#_appid').value;
         //console.log('process.env.NODE_ENV:' + process.env.NODE_ENV);
         this.setState({ pageLoading: true });
-        axios.post((process.env.NODE_ENV === 'development' ? '/api' : '') + '/PersonalCenter/Article/SaveArtJson', {
+        axios.post((process.env.NODE_ENV === 'development' ? '/api' : '') + '/PersonalCenter/Article/SaveArtJson?app='+appid, {
             ArtId: articleData.ArtId,
             json: JSON.stringify(this.props.modules.map(item => {
                 switch (item.type) {
@@ -59,7 +60,14 @@ class Preview extends React.Component {
             }))
         }).then(req => {
             console.log(req.data);
-            axios.post((process.env.NODE_ENV === 'development' ? '/api' : '') + '/PersonalCenter/Article/SaveEditing2', {
+            if(articleData.ArtId==0){
+                articleData.ArtId=req.data.artId;
+                console.log(articleData);
+                document.querySelector('#articleData').value=JSON.stringify(articleData);
+                console.log(document.querySelector('#articleData').value);
+            }
+
+            axios.post((process.env.NODE_ENV === 'development' ? '/api' : '') + '/PersonalCenter/Article/SaveEditing2?app='+appid, {
                 ArtId: articleData.ArtId,
                 Title: this.props.articleTitle,
                 Author: this.props.editer,
@@ -69,6 +77,12 @@ class Preview extends React.Component {
                 this.setState({ pageLoading: false });
                 if (res.data.success) {
                     Toast.info('发布成功！', 2);
+                    setTimeout(function(){
+                        Toast.info('正在跳转文章页', 2);
+                        setTimeout(function(){
+                            window.location.href='NewArticleDetail?artId='+articleData.ArtId;
+                        },2000);
+                    },1500);
                 } else {
                     Toast.info('发布失败！', 2);
                 }
@@ -138,7 +152,8 @@ class Home extends React.Component {
                 //     value: ""
                 // }
             ],
-            mainContent: ''
+            mainContent: '',
+            goBack:function(){window.history.go(-1);}
         }
         this.addModuleHandler = this.addModuleHandler.bind(this);
         this.changeCover = this.changeCover.bind(this);
@@ -150,6 +165,7 @@ class Home extends React.Component {
     componentDidMount() {
         //console.log(process.env.NODE_ENV);
         const articleData = JSON.parse(document.querySelector('#articleData').value);
+        const appid = document.querySelector('#_appid').value;
         const self = this;
         $("body").on('click', ".imgsWrap img", function () {
             if (!self.state.preview) { return; }
@@ -166,12 +182,12 @@ class Home extends React.Component {
             });
         });
         this.setState({ pageLoading: true });
-        axios.post((process.env.NODE_ENV === 'development' ? '/api' : '') + '/PersonalCenter/Article/GetArtJson', { ArtId: articleData.ArtId }).then(req => {
+        axios.post((process.env.NODE_ENV === 'development' ? '/api' : '') + '/PersonalCenter/Article/GetArtJson?app='+appid, { ArtId: articleData.ArtId }).then(req => {
             // this.setState({
             //     modules: req.data
             // });
             //console.log(req.data);
-            axios.post((process.env.NODE_ENV === 'development' ? '/api' : '') + '/PersonalCenter/Article/GetArtAd', {}).then(req2 => {
+            axios.post((process.env.NODE_ENV === 'development' ? '/api' : '') + '/PersonalCenter/Article/GetArtAd?app='+appid, {}).then(req2 => {
                 this.adList = req2.data;
                 this.setState({
                     modules: req.data || [],
@@ -235,7 +251,7 @@ class Home extends React.Component {
             formData.append('file', file);
             axios.post((process.env.NODE_ENV === 'development' ? '/api' : '') + '/Upload/ImgUpload', formData).then(req => {
                 this.setState({
-                    coverImg: 'http://wxgzh.zongzong.kunxiangtech.cn/' + req.data.result
+                    coverImg: '' + req.data.result
                 });
                 Toast.info('图片上传成功！', 2);
                 this.setState({ isUploding: false });
@@ -282,7 +298,7 @@ class Home extends React.Component {
                     <div className='mainContent' style={{ paddingBottom: '5rem' }}>
                         <NavBar
                             mode="light"
-                            icon={<Icon type="left" />}
+                            icon={<Icon type="left" onClick={this.state.goBack} />}
                             onLeftClick={() => console.log('onLeftClick')}
                             rightContent={[
                                 <Icon key="0" type="search" onClick={this.showPreview} />
