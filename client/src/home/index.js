@@ -203,6 +203,7 @@ class Home extends React.Component {
                 value: '',
                 hasEdit: false
             });
+            
         } else if (type === 'ad') {
             _modules.splice(index, 0, {
                 id: Date.parse(new Date()) + '-' + parseInt(Math.random() * 1000000),
