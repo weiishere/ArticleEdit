@@ -203,7 +203,7 @@ class Home extends React.Component {
                 value: '',
                 hasEdit: false
             });
-            
+
         } else if (type === 'ad') {
             _modules.splice(index, 0, {
                 id: Date.parse(new Date()) + '-' + parseInt(Math.random() * 1000000),
@@ -279,8 +279,8 @@ class Home extends React.Component {
     render() {
         return (
             <QueueAnim className='wrapper'>
-                <div style={{ display: this.state.preview ? 'none' : 'block' }}>
-                    <div className='mainContent' style={{ paddingBottom: '5rem' }}>
+                <div>
+                    <div style={{ display: this.state.preview ? 'none' : 'block' }} className='mainContent' style={{ paddingBottom: '5rem' }}>
                         <NavBar
                             mode="light"
                             icon={<Icon type="left" />}
@@ -379,10 +379,11 @@ class Home extends React.Component {
                             animating={true}
                         />
                     </div>}
+                    {<Preview key='preview' {...this.state} visible={this.state.preview} onBack={() => {
+                        this.setState({ preview: false });
+                    }} />}
                 </div>
-                {<Preview key='preview' {...this.state} visible={this.state.preview} onBack={() => {
-                    this.setState({ preview: false });
-                }} />}
+
             </QueueAnim>
         );
     }
