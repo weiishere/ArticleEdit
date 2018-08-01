@@ -67,7 +67,7 @@ class ImgEditor extends React.Component {
                     formData.append('file', file);
                     axios.post((process.env.NODE_ENV === 'development' ? '/api' : '') + '/Upload/ImgUpload', formData).then(req => {
                         let _imgs = clone(this.state.imgs);
-                        _imgs.push('http://wxgzh.zongzong.kunxiangtech.cn/' + req.data.result);
+                        _imgs.push('' + req.data.result);
                         this.setState({
                             imgs: _imgs
                         });
