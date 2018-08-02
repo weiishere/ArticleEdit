@@ -190,7 +190,7 @@ class TextEditor extends React.Component {
                     { opacity: [1, 0], scale: [(1, 1), (0.8, 0.8)] }
                 ]}>
                     {this.state.mod === 'view' ?
-                        <div key='viewWrap' className='viewWrap ql-editor' onClick={() => { this.setState({ mod: 'edit' }) }} dangerouslySetInnerHTML={{ __html: this.state.content }}>
+                        <div key='viewWrap' className='viewWrap ql-editor' onClick={() => { this.setState({ mod: 'edit' }); }} dangerouslySetInnerHTML={{ __html: this.state.content }}>
                         </div>
                         :
                         <div key='editWrap' className='editWrap'>

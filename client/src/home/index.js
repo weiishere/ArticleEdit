@@ -46,7 +46,7 @@ class Preview extends React.Component {
         const appid = document.querySelector('#_appid').value;
         //console.log('process.env.NODE_ENV:' + process.env.NODE_ENV);
         this.setState({ pageLoading: true });
-        axios.post((process.env.NODE_ENV === 'development' ? '/api' : '') + '/PersonalCenter/Article/SaveArtJson?app='+appid, {
+        axios.post((process.env.NODE_ENV === 'development' ? '/api' : '') + '/PersonalCenter/Article/SaveArtJson?app=' + appid, {
             ArtId: articleData.ArtId,
             json: JSON.stringify(this.props.modules.map(item => {
                 switch (item.type) {
@@ -60,14 +60,14 @@ class Preview extends React.Component {
             }))
         }).then(req => {
             console.log(req.data);
-            if(articleData.ArtId==0){
-                articleData.ArtId=req.data.artId;
+            if (articleData.ArtId == 0) {
+                articleData.ArtId = req.data.artId;
                 console.log(articleData);
-                document.querySelector('#articleData').value=JSON.stringify(articleData);
+                document.querySelector('#articleData').value = JSON.stringify(articleData);
                 console.log(document.querySelector('#articleData').value);
             }
 
-            axios.post((process.env.NODE_ENV === 'development' ? '/api' : '') + '/PersonalCenter/Article/SaveEditing2?app='+appid, {
+            axios.post((process.env.NODE_ENV === 'development' ? '/api' : '') + '/PersonalCenter/Article/SaveEditing2?app=' + appid, {
                 ArtId: articleData.ArtId,
                 Title: this.props.articleTitle,
                 Author: this.props.editer,
@@ -77,12 +77,12 @@ class Preview extends React.Component {
                 this.setState({ pageLoading: false });
                 if (res.data.success) {
                     Toast.info('发布成功！', 2);
-                    setTimeout(function(){
+                    setTimeout(function () {
                         Toast.info('正在跳转文章页', 2);
-                        setTimeout(function(){
-                            window.location.href='NewArticleDetail?artId='+articleData.ArtId;
-                        },2000);
-                    },1500);
+                        setTimeout(function () {
+                            window.location.href = 'NewArticleDetail?artId=' + articleData.ArtId;
+                        }, 2000);
+                    }, 1500);
                 } else {
                     Toast.info('发布失败！', 2);
                 }
@@ -135,6 +135,7 @@ class Home extends React.Component {
             coverImg: articleData.cover_img_url,//'./images/demo.jpg',
             editer: articleData.author,
             articleTitle: articleData.title,
+            modEdit: false,
             modules: [
                 // {
                 //     type: 'text',
@@ -153,9 +154,10 @@ class Home extends React.Component {
                 // }
             ],
             mainContent: '',
-            goBack:function(){window.history.go(-1);}
+            goBack: function () { window.history.go(-1); }
         }
         this.addModuleHandler = this.addModuleHandler.bind(this);
+        this.moudleEditCallBack = this.moudleEditCallBack.bind(this);
         this.changeCover = this.changeCover.bind(this);
         this.showPreview = this.showPreview.bind(this);
         this.OkHandler = this.OkHandler.bind(this);
@@ -180,14 +182,16 @@ class Home extends React.Component {
                     $(_self).remove();
                 }, 300);
             });
+        }).on('click', '.viewWrap', () => {
+            this.moudleEditCallBack();
         });
         this.setState({ pageLoading: true });
-        axios.post((process.env.NODE_ENV === 'development' ? '/api' : '') + '/PersonalCenter/Article/GetArtJson?app='+appid, { ArtId: articleData.ArtId }).then(req => {
+        axios.post((process.env.NODE_ENV === 'development' ? '/api' : '') + '/PersonalCenter/Article/GetArtJson?app=' + appid, { ArtId: articleData.ArtId }).then(req => {
             // this.setState({
             //     modules: req.data
             // });
             //console.log(req.data);
-            axios.post((process.env.NODE_ENV === 'development' ? '/api' : '') + '/PersonalCenter/Article/GetArtAd?app='+appid, {}).then(req2 => {
+            axios.post((process.env.NODE_ENV === 'development' ? '/api' : '') + '/PersonalCenter/Article/GetArtAd?app=' + appid, {}).then(req2 => {
                 this.adList = req2.data;
                 this.setState({
                     modules: req.data || [],
@@ -201,6 +205,10 @@ class Home extends React.Component {
             this.setState({ pageLoading: false });
             Toast.info('数据获取异常，请检查网络！', 2);
         });
+    }
+    moudleEditCallBack() {
+        this.setState({ modEdit: true });
+        //alert('moudleEditCallBack');
     }
     addModuleHandler(type, index) {
         let _modules = clone(this.state.modules);
@@ -229,6 +237,7 @@ class Home extends React.Component {
                 hasEdit: false
             });
         }
+        this.moudleEditCallBack();
         this.setState({ modules: _modules });
     }
     removeModuleHandler(index) {
@@ -274,7 +283,7 @@ class Home extends React.Component {
         let _html = '';
         $("#mainContent .viewWrap").each((index, item) => {
             _html += $(item).prop("outerHTML");
-        })
+        });
         this.setState({
             preview: true,
             mainContent: _html
@@ -285,19 +294,21 @@ class Home extends React.Component {
         let _modules = clone(this.state.modules);
         _modules[index].value = result;
         _modules[index].hasEdit = true;
-        this.setState({ modules: _modules });
+        this.setState({ modules: _modules, modEdit: false });
     }
     CancleHandler(index) {
         let _modules = clone(this.state.modules);
         _modules[index].hasEdit = true;
-        this.setState({ modules: _modules });
+        this.setState({ modules: _modules, modEdit: false });
     }
     render() {
+        //console.log(this.state.preview ? 'none' : 'block');
         return (
             <QueueAnim className='wrapper'>
                 <div>
-                    <div style={{ display: this.state.preview ? 'none' : 'block' }} className='mainContent' style={{ paddingBottom: '5rem' }}>
+                    <div style={{ display: this.state.preview ? 'none' : 'block', paddingBottom: '5rem', paddingTop: this.state.modEdit ? 0 : '2.8rem' }} className='mainContent'>
                         <NavBar
+                            style={{ position: this.state.modEdit ? 'inherit' : 'fixed' }}
                             mode="light"
                             icon={<Icon type="left" onClick={this.state.goBack} />}
                             onLeftClick={() => console.log('onLeftClick')}
@@ -357,7 +368,7 @@ class Home extends React.Component {
                                                 _modules[index].value = result.value;
                                                 _modules[index].imgs = result.imgs;
                                                 _modules[index].hasEdit = true;
-                                                this.setState({ modules: _modules });
+                                                this.setState({ modules: _modules,modEdit: false });
                                             }}
                                             done={() => this.CancleHandler(index)}
                                             removeHandler={() => { this.removeModuleHandler(index) }}
@@ -371,7 +382,7 @@ class Home extends React.Component {
                                                 _modules[index].value = result.value;
                                                 _modules[index].adId = result.adId;
                                                 _modules[index].hasEdit = true;
-                                                this.setState({ modules: _modules });
+                                                this.setState({ modules: _modules,modEdit: false });
                                             }}
                                             done={() => this.CancleHandler(index)}
                                             removeHandler={() => { this.removeModuleHandler(index) }}
@@ -400,7 +411,7 @@ class Home extends React.Component {
                     }} />}
                 </div>
 
-            </QueueAnim>
+            </QueueAnim >
         );
     }
 }
